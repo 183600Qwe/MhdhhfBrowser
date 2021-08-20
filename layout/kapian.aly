@@ -1,0 +1,60 @@
+{
+  LinearLayout,
+  layout_width="fill",
+  {
+    CardView,
+    id="悬浮工具栏设置与教程卡片",
+    layout_width="fill",
+    CardElevation="5dp",
+    radius="15dp",
+    layout_margin="9dp",
+    {
+      LinearLayout;
+      onClick=function()
+        运行代码含读取文件("mods/xuanfugongjulanshezhijiaocheng")
+      end;
+      Background=转波纹(小条2);
+      layout_width="fill";
+      {
+        TextView;
+        textColor=文字;
+        textSize="16sp";
+        padding="25dp";
+        layout_marginTop="16dp";
+        text=[[悬浮工具栏设置与教程]];
+      };
+    };
+    {
+      LinearLayout;
+      gravity="center";
+      layout_width="56dp";
+      layout_height="56dp";
+      layout_gravity="right";
+      Background=转波纹(小条2);
+      onClick=function()
+        --设置动画的属性
+        透明动画=AlphaAnimation(1,0)
+        透明动画.setDuration(100)--设置动画时间
+        透明动画.setFillAfter(true)--设置动画后停留位置
+        透明动画.setRepeatCount(0)--设置无限循环
+        --绑定动画
+        悬浮工具栏设置与教程卡片.startAnimation(透明动画)
+        import "android.view.animation.Animation$AnimationListener"
+        透明动画.setAnimationListener(AnimationListener{
+          onAnimationEnd=function()
+            悬浮工具栏设置与教程卡片.removeAllViews();
+            写入文件("/data/data/"..activity.getPackageName().."/是否显示悬浮工具栏设置与教程卡片.xml","")
+        end})
+      end;
+      {
+        ImageView;
+        layout_height="22dp";
+        src="png/qwetyi.png";
+        -- id="Sideslip1";
+        colorFilter=文字123,--图片颜色
+        -- colorFilter=io.open("/data/data/"..activity.getPackageName().."/顶栏部件颜色储存.xml"):read("*a");
+        layout_width="22dp";
+      };
+    };
+  };
+};

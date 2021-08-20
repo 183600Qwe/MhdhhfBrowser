@@ -1,0 +1,18 @@
+appname="Mhdhhf浏览器"
+appver="3.15"
+appcode="34"
+appsdk="15"
+path_pattern=""
+packagename="com.mhdhhf.browser"
+theme="Theme"
+app_key=""
+app_channel=""
+developer="qwe12345678"
+description=""
+debugmode=true
+user_permission={
+  "INTERNET",
+  "SYSTEM_ALERT_WINDOW",
+  "VIBRATE",
+  "WRITE_EXTERNAL_STORAGE"
+}

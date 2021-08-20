@@ -1,0 +1,21 @@
+{
+  LinearLayout;--线性布局
+  Orientation='vertical';--布局方向
+  layout_width='fill';--布局宽度
+  layout_height='fill';--布局高度
+  id="程序启动事件";
+  BackgroundColor=背景3;
+  {
+    LinearLayout;--线性布局
+    id='标题栏承载器';
+    layout_width='fill';--布局宽度
+    Orientation='vertical';--布局方向
+  };
+  {
+    LuaEditor;
+    layout_height="fill";
+    id="程序启动事件LuaEditor";
+    layout_width="fill";
+    text=io.open("/data/data/"..activity.getPackageName().."/程序启动事件.lua"):read("*a");
+  };
+};
