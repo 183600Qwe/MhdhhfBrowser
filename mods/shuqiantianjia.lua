@@ -1,5 +1,5 @@
-function 保存收藏(标题,链接)
-  function 显示添加书签对话框()
+function 保存收藏(标题,链接,是否强制显示链接输入框)
+  function 显示添加书签对话框(是否强制显示链接输入框)
     --输入对话框
     InputLayout={
       LinearLayout;
@@ -15,16 +15,28 @@ function 保存收藏(标题,链接)
         id="mLinearLayout2";
       };
       {
-        CheckBox;
-        id="记录阅读位置CheckBox";
-        layout_margin="10dp";
-        text='记录阅读位置';
-        Checked=true;
+        LinearLayout,--线性布局
+        orientation="horizontal",--布局方向
+        layout_width="fill",--布局宽度
+        {
+          CheckBox;
+          id="记录阅读位置CheckBox";
+          layout_margin="10dp";
+          text='记录阅读位置';
+          Checked=true;
+        };
+        {
+          CheckBox;
+          id="可视部分截图CheckBox";
+          layout_margin="10dp";
+          text='可视部分截图';
+          Checked=false;
+        };
       };
     };
     对话框({
       标题="添加书签",
-      点击事件=function()
+      --[[点击事件=function()
         内容=io.open("/data/data/"..activity.getPackageName().."/书签保存.xml"):read("*a")
         写入文件("/data/data/"..activity.getPackageName().."/书签保存.xml",内容..获取内容(标题qwe.text,链接qwe.text))
         if 记录阅读位置CheckBox.Checked then
@@ -36,7 +48,7 @@ function 保存收藏(标题,链接)
           写入文件("/data/data/"..activity.getPackageName().."/阅读位置储存.xml",dump(内容))
         end
         adapterData({标题qwe.text},{链接qwe.text})
-      end,
+      end,]]
       是否显示取消按钮=true,
       输入框可用=true,
     })
@@ -45,10 +57,10 @@ function 保存收藏(标题,链接)
       {"标题",标题,"标题qwe"},
       {"链接",链接,"链接qwe"},
     }
-    if not 读取记录项目("书签添加器在已自动填充链接时显示链接") then
+    if not 读取记录项目("书签添加器在已自动填充链接时显示链接") and not 是否强制显示链接输入框 then
       table.remove(项目列表,2)
     end
-    a={
+     a={
       LinearLayout;
       layout_width="fill";
       {
@@ -71,7 +83,7 @@ function 保存收藏(标题,链接)
     mLinearLayout.addView(选择保存目录弹窗(nil,nil,nil,标题,链接))
     隐藏控件(内容ScrollView)
   end
-  显示添加书签对话框()
+  显示添加书签对话框(是否强制显示链接输入框)
   --  showDataDialog(名称,名称)
 end
 --print(io.open("/data/data/"..activity.getPackageName().."/阅读位置储存.xml"):read("*a"))
@@ -141,6 +153,9 @@ function 选择保存目录弹窗(主页项目按钮点击事件,文件夹按钮
       列表按钮左距LinearLayout={
         Visibility=View.GONE,
       },
+      Imagea={
+        Visibility=View.GONE,
+      },
       Image2={
         src="png/home_black.png",
         ColorFilter=文字,
@@ -158,6 +173,9 @@ function 选择保存目录弹窗(主页项目按钮点击事件,文件夹按钮
       列表按钮左距LinearLayout={
         Visibility=View.GONE,
       },
+      Imagea={
+        Visibility=View.GONE,
+      },
       Image2={
         src="png/fglkg.png",
         ColorFilter=文字,
@@ -173,6 +191,9 @@ function 选择保存目录弹窗(主页项目按钮点击事件,文件夹按钮
         Visibility=View.GONE,
       },
       列表按钮左距LinearLayout={
+        Visibility=View.GONE,
+      },
+      Imagea={
         Visibility=View.GONE,
       },
       Image2={
@@ -242,12 +263,28 @@ function 选择保存目录弹窗(主页项目按钮点击事件,文件夹按钮
   local items=LuaAdapter(this,adpd,item)
   选择保存目录list.Adapter=items
   monItemClick=function(parent,v,pos,id)
+    if 可视部分截图CheckBox.Checked then
+      if 文件是否存在(picture2..view.getTitle()..".png")==false then
+      图片编号=0
+        savePicture(picture2..view.getTitle()..".png",getViewBitmap(view),false,true)
+       else
+        图片编号=1
+        while 文件是否存在(websave..view.getTitle().."("..图片编号..").png") do
+          图片编号=图片编号+1
+        end
+        savePicture(picture2..view.getTitle().."("..图片编号..").png",getViewBitmap(view),false,true)
+      end
+    end
     if v.Tag.text.Text=="浏览器主页" then
       添加至主页(标题,链接,记录阅读位置CheckBox.Checked)
      elseif v.Tag.text.Text=="书签根目录" then
       内容=io.open("/data/data/"..activity.getPackageName().."/书签保存.xml"):read("*a")
       function 添加(标题,链接)
-        内容=内容..获取内容(标题,链接)
+        if 可视部分截图CheckBox.Checked then
+          内容=内容..获取内容(标题,链接,图片编号)
+         else
+          内容=内容..获取内容(标题,链接)
+        end
       end
       if 书签根目录按钮点击事件 then
         书签根目录按钮点击事件(添加)
@@ -272,7 +309,11 @@ function 选择保存目录弹窗(主页项目按钮点击事件,文件夹按钮
       此文件夹项目列表=文件夹列表2[id]
       --此文件夹项目列表[1]=nil
       function 添加(标题,链接)
-        table.insert(此文件夹项目列表[2],{标题,链接})
+        if 可视部分截图CheckBox.Checked then
+          table.insert(此文件夹项目列表[2],{标题,链接,图片编号})
+         else
+          table.insert(此文件夹项目列表[2],{标题,链接,图片编号})
+        end
       end
       if 文件夹按钮点击事件 then
         文件夹按钮点击事件(添加)
@@ -324,13 +365,7 @@ function 新建文件夹(是否在选择保存目录列表添加)
       文件夹列表2=文件夹列表
       table.insert(文件夹列表2,{text,{}})
       内容2=""
-      title2={}
-      bookId2={}
-      内容=io.open("/data/data/"..activity.getPackageName().."/"..文件名称..".xml"):read("*a")
-      for t,c in 内容:gmatch("【项目】(.-)【项目】") do
-        table.insert(title2,t:match("【标题】(.-)【标题】"))
-        table.insert(bookId2,t:match("【链接】(.-)【链接】"))
-      end
+      刷新书签()
       for k,v in ipairs(title2) do --遍历
         标题=title2[k]
         链接=bookId2[k]
@@ -353,7 +388,11 @@ end
 function 添加至主页(标题,链接,是否记录阅读位置)
   主页项目=io.open("/data/data/"..activity.getPackageName().."/主页项目.xml"):read("*a")
   function 添加(标题,链接)
-    主页项目=主页项目..获取内容(标题,链接)
+    if 可视部分截图CheckBox.Checked then
+      主页项目=主页项目..获取内容(标题,链接,图片编号)
+     else
+      主页项目=主页项目..获取内容(标题,链接)
+    end
   end
   if 主页项目按钮点击事件 then
     主页项目按钮点击事件(添加)
@@ -361,7 +400,9 @@ function 添加至主页(标题,链接,是否记录阅读位置)
     添加(标题,链接)
   end
   写入文件("/data/data/"..activity.getPackageName().."/主页项目.xml",主页项目)
-  刷新主页项目()
+  --刷新主页项目("网页收藏")
+import "com.androlua.LuaAdapter"
+  table.insert(list3.Adapter.Data,主页项目项目列表(标题,链接))
   上次添加到的地方="主页项目"
   if 是否记录阅读位置 then
     a=0

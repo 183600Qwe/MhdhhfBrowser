@@ -1,0 +1,41 @@
+{
+  LinearLayout;--线性布局
+  layout_width='fill';--布局宽度
+  layout_height='fill';--布局高度
+  BackgroundColor=背景3;
+  id='设置背景外';
+  orientation="horizontal";
+  Focusable=true,
+  FocusableInTouchMode=true,
+onClick=function()
+  end;
+  {
+    LinearLayout;--线性布局
+    Orientation='vertical';--布局方向
+    layout_width=AWidth2;--布局宽度
+    layout_height='fill';--布局高度
+    --BackgroundColor=背景3;
+    id='设置背景';
+
+    {
+      LinearLayout;--线性布局
+      id='标题栏承载器';
+      layout_width='fill';--布局宽度
+      Orientation='vertical';--布局方向
+    };
+    --[[{
+      FrameLayout;
+      layout_width='fill';--布局宽度
+      layout_height='fill';--布局高度
+      --BackgroundColor=背景3;
+      id='设置list外';]]
+    {
+      ListView;
+      --layout_height="fill";
+      id="设置list";
+      layout_width='fill';--布局宽度
+      dividerHeight="0";
+    };
+    --};
+  };
+};

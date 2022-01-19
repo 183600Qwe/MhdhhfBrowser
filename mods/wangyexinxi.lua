@@ -1,4 +1,5 @@
-local gt2={
+local gt2=
+     {
         LinearLayout,
         orientation="vertical",
         layout_height='fill';
@@ -17,6 +18,10 @@ local gt2={
             background=菜单背景,
             id='菜单背景FrameLayout';
           };
+        {
+      ScrollView;--线性布局
+      layout_width='fill';--布局宽度
+          layout_height='fill';
           {
             CardView;
             Elevation='8dp';
@@ -160,6 +165,7 @@ local gt2={
             };
           };
         };
+      };
       };
 
 

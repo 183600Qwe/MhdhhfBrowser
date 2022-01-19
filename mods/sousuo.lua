@@ -104,8 +104,12 @@ function 搜索2(q,view,是否在悬浮窗,是否粘贴,搜索内容)
                     Text=t:match("【标题】(.-)【标题】"),
                   },
                   列表按钮较暗色背景={
-                    Visibility=View.VISIBLE,
+                    Visibility=View.GONE,
                   },
+                Imagea={
+                  src="png",
+                  Visibility=View.GONE,
+                },
                   icd={
                     Visibility=View.VISIBLE,
                   },
@@ -128,7 +132,11 @@ function 搜索2(q,view,是否在悬浮窗,是否粘贴,搜索内容)
                   Text=a[1],
                 },
                 列表按钮较暗色背景={
-                  Visibility=View.VISIBLE,
+                  Visibility=View.GONE,
+                },
+                Imagea={
+                  src="png",
+                  Visibility=View.GONE,
                 },
                 icd={
                   Visibility=View.VISIBLE,
@@ -147,8 +155,12 @@ function 搜索2(q,view,是否在悬浮窗,是否粘贴,搜索内容)
                     Text=a2[1].."（来自"..a[1].."）",
                   },
                   列表按钮较暗色背景={
-                    Visibility=View.VISIBLE,
+                    Visibility=View.GONE,
                   },
+                Imagea={
+                  src="png",
+                  Visibility=View.GONE,
+                },
                   icd={
                     Visibility=View.VISIBLE,
                   },
@@ -175,7 +187,7 @@ function 搜索2(q,view,是否在悬浮窗,是否粘贴,搜索内容)
           显示控件(list333)
         end
       end
-  end}
+    end}
   list333.onItemClick=function(adp,v,position,id)--3255273 2
     view.loadUrl(bookId2[position+1])
     pop.dismiss()
@@ -238,8 +250,9 @@ function 搜索2(q,view,是否在悬浮窗,是否粘贴,搜索内容)
       Url=(tostring(string.gsub(io.open("/data/data/"..activity.getPackageName().."/搜索URL.xml"):read("*a"),"搜索内容",(edit.text))))
       当前搜索的内容=edit.text
     end
-    if (是否正在查看布局页面) or 是否在发起新搜索时新建一次窗口=="打开" then
-      view.loadUrl(Url)
+           if (是否正在查看布局页面) or 是否在发起新搜索时新建一次窗口=="打开" then
+       离开布局页面()
+  view.loadUrl(Url)
      else
       webviewp:openNewUrl(Url)
     end
@@ -253,8 +266,13 @@ function 搜索2(q,view,是否在悬浮窗,是否粘贴,搜索内容)
     -- edit.text=string.sub(edit.text,1,7)
   end
   立即搜索Imageiew外LinearLayout.onClick=搜索
-  选择搜索引擎.onClick=function()
-    切换搜索引擎(选择搜索引擎)
+  选择搜索引擎.onClick=function(v)
+    xpcall(function()
+      切换搜索引擎(v)
+    end,function()
+      popw.dismiss()
+      切换搜索引擎(网页标题副父布局)
+    end)
   end
   清除输入框里的内容.onClick=function()
     edit.text=""
@@ -325,6 +343,14 @@ function 搜索2(q,view,是否在悬浮窗,是否粘贴,搜索内容)
     工具ID列表[t:match("【标题】(.-)【标题】")]=项目三背景
   end
   --end
+  是否隐藏选择搜索引擎按钮=io.open("/data/data/"..activity.getPackageName().."/是否隐藏选择搜索引擎按钮.xml"):read("*a")
+  if 是否隐藏选择搜索引擎按钮=="打开" then
+    隐藏控件(选择搜索引擎)
+  end
+  是否隐藏搜索按钮=io.open("/data/data/"..activity.getPackageName().."/是否隐藏搜索按钮.xml"):read("*a")
+  if 是否隐藏搜索按钮=="打开" then
+    隐藏控件(立即搜索Imageiew外LinearLayout)
+  end
   edit.onKey=function(_,b)
     if b==4 then
       popw.dismiss()
@@ -356,6 +382,11 @@ function pop窗口布局()
     BackgroundColor=背景2;
     gravity="bottom|center";
     {
+    LinearLayout;
+  layout_weight="1",--重力分配
+      layout_height="fill";
+    };
+    {
       ListView,
       id="list333",
       fastScrollEnabled=true;
@@ -365,8 +396,7 @@ function pop窗口布局()
       paddingBottom="20dp";
       layout_gravity="bottom|center";
       layout_marginBottom="-20dp";
-     layout_weight="1";
-       --DividerHeight=true,--设置无隔断线
+            --DividerHeight=true,--设置无隔断线
       --layout_height="fill";
     },
     {
@@ -375,7 +405,7 @@ function pop窗口布局()
       orientation="horizontal";
       layout_height="44dp";
       -- background=背景2;
-      id='复制网页信息和编辑链接';
+      --id='复制网页信息和编辑链接';
       gravity="right";
       -- elevation="3dp";
       {
@@ -434,13 +464,13 @@ function pop窗口布局()
           LinearLayout;
           layout_width="fill";
           orientation="horizontal";
-          layout_height="56dp";
+          layout_height="84dp";
           id='mToolbar';
           background=背景2;
           {
             EditText;
-            hint=主页搜索hint;
-            textSize="16sp";
+            --hint=主页搜索hint;
+            textSize="20sp";
             id="edit";
             textColor=文字;
             layout_height="fill";
@@ -456,16 +486,16 @@ function pop窗口布局()
             LinearLayout;
             gravity="center";
             layout_width="45dp";
-            layout_height="56dp";
+            layout_height="fill";
             id="清除输入框里的内容";
             {
               ImageView;
+              layout_width="22dp";
               layout_height="22dp";
               src="png/qwetyi.png";
               -- id="Sideslip1";
               colorFilter=文字123,--图片颜色
               -- colorFilter=io.open("/data/data/"..activity.getPackageName().."/顶栏部件颜色储存.xml"):read("*a");
-              layout_width="22dp";
               id="清除输入框里的内容ImageView";
             };
           };
@@ -473,16 +503,16 @@ function pop窗口布局()
             LinearLayout;
             gravity="center";
             layout_width="45dp";
-            layout_height="56dp";
+            layout_height="fill";
             id="选择搜索引擎";
             {
               ImageView;
               layout_height="22dp";
+              layout_width="22dp";
               src="png/ic_menu.png";
               -- id="Sideslip1";
               colorFilter=文字123,--图片颜色
               -- colorFilter=io.open("/data/data/"..activity.getPackageName().."/顶栏部件颜色储存.xml"):read("*a");
-              layout_width="22dp";
               id="清除输入框里的内容ImageView";
             };
           };
@@ -490,16 +520,17 @@ function pop窗口布局()
             LinearLayout;
             gravity="center";
             layout_width="45dp";
-            layout_height="56dp";
+            layout_height="fill";
             id="立即搜索Imageiew外LinearLayout";
             {
               ImageView;
-              layout_height="22dp";
-              src="png/mmm.png";
+              layout_height="20dp";
+              layout_width="20dp";
+              src="png/ic_keyboard_backspace_black_24dp.png";
+            RotationY=180;--图片是反的。
               -- id="Sideslip1";
               colorFilter=文字123,--图片颜色
               -- colorFilter=io.open("/data/data/"..activity.getPackageName().."/顶栏部件颜色储存.xml"):read("*a");
-              layout_width="22dp";
               id="立即搜索Imageiew";
             };
           };

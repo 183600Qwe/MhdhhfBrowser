@@ -157,9 +157,9 @@ ftb.onTouch=function(view,event)
   return true
 
 end
-是否启用菜单按钮上滑功能=io.open("/data/data/"..activity.getPackageName().."/是否启用菜单按钮上滑功能.xml"):read("*a")
+--[[是否启用菜单按钮上滑功能=io.open("/data/data/"..activity.getPackageName().."/是否启用菜单按钮上滑功能.xml"):read("*a")
 if 是否启用菜单按钮上滑功能=="打开" then
-  --[[打开菜单.onTouch=function(view,event)
+  打开菜单.onTouch=function(view,event)
     if 底栏样式=="搜索样式" then
       --设置的图片也可以输入路径
       第1个按钮.setImageBitmap(loadbitmap("png/gfwzu.png"))
@@ -270,5 +270,5 @@ if 是否启用菜单按钮上滑功能=="打开" then
 
     return true
 
-  end]]
   end
+  end]]

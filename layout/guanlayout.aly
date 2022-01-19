@@ -69,7 +69,58 @@
         textColor=文字;
       };
     };
-
+      {
+    TextView,
+    textColor=文字;
+    text="关于我";
+    textSize="15sp",
+    layout_margin="10dp",
+    layout_marginLeft="44dp";
+      },
+      {
+  LinearLayout,
+  orientation="horizontal",
+  layout_width="fill",
+      {
+        CardView;
+        layout_marginLeft="44dp";
+            --  CardElevation='0dp';
+        layout_width='56dp';
+        layout_height='56dp';
+        radius='28dp';
+        elevation="0dp";
+        layout_marginTop='5dp';
+        CardBackgroundColor='#22ffffff';
+        {
+          LinearLayout;
+          layout_width='fill';
+          layout_height='fill';
+          background='png/touxiang.jpg';
+        };
+      };
+      {
+  LinearLayout,
+  orientation="vertical";
+  layout_width="fill",
+  layout_marginLeft="10dp";
+                {
+            TextView;
+            id="srct";
+            layout_weight="1",--重力分配
+           text="qwe12345678",
+             textColor=文字,
+            --gravity="left",
+            textSize="18sp",
+                      };
+          {
+            TextView;
+            text="开发&设计 ♂ 北京";
+            textColor=文字,
+            --gravity="right",
+            textSize="13sp",
+                 };
+          };
+      };
     {
       TextView,
       id="qwe",

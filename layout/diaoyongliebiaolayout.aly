@@ -45,13 +45,6 @@
       layout_height='fill';--布局高度
       id="ftb20";
       gravity="center";
-      onClick=function()
-        if 文本2=="脚本管理" or 文本2=="工具脚本管理" then
-          运行代码含读取文件("mods/tianjia/tianjiajiaoben")
-         elseif 文本2=="搜索引擎管理" then
-          运行代码含读取文件("mods/tianjia/tianjiasuosouyingqin")
-        end
-      end,
       {
         ImageView;
         id="ftb_img";

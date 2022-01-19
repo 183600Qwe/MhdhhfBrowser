@@ -1,147 +1,152 @@
 {
-  LinearLayout,
-  orientation="vertical",
-  layout_width="fill",
-  layout_height="fill",
-  gravity="center";
+  ScrollView;--线性布局
+  layout_width='fill';--布局宽度
+  layout_height='fill';
   BackgroundColor=背景;
   id="网页加载失败背景",
   {
     LinearLayout,
-    orientation="horizontal",
-    layout_gravity="center";
+    orientation="vertical",
+    layout_width="fill",
+    layout_height="fill",
+    gravity="center";
     {
-      LinearLayout;
-      gravity="center";
-      layout_width="56dp";
-      layout_height="56dp";
+      LinearLayout,
+      orientation="horizontal",
+      layout_gravity="center";
       {
-        ImageView;
-        layout_height="28dp";
-        src="png/twotone_error_black_24dp.png";
-        --  id="Sideslip1";
-        colorFilter=文字;
-        -- colorFilter=io.open("/data/data/"..activity.getPackageName().."/顶栏部件颜色储存.xml"):read("*a");
-        layout_width="25dp";
+        LinearLayout;
+        gravity="center";
+        layout_width="56dp";
+        layout_height="56dp";
+        {
+          ImageView;
+          layout_height="28dp";
+          src="png/twotone_error_black_24dp.png";
+          --  id="Sideslip1";
+          colorFilter=文字;
+          -- colorFilter=io.open("/data/data/"..activity.getPackageName().."/顶栏部件颜色储存.xml"):read("*a");
+          layout_width="25dp";
+        };
       };
+      {
+        TextView,
+        text="网页加载失败",
+        textSize="18sp";
+        layout_height="56dp";
+        gravity="center";
+      },
     };
     {
       TextView,
-      text="网页加载失败",
-      textSize="18sp";
-      layout_height="56dp";
+      layout_width="fill",
+      textSize="16sp";
+      layout_margin="20dp";
+      id="错误信息";
       gravity="center";
+      textIsSelectable=true,
     },
-  };
-  {
-    TextView,
-    layout_width="fill",
-    textSize="16sp";
-    layout_margin="20dp";
-    id="错误信息";
-    gravity="center";
-    textIsSelectable=true,
-  },
-  {
-    LinearLayout;
-    layout_margin='18dp';
-    backgroundDrawable=边框(圆角大小,"#00000000",边框2,dp2px("1"));
-    layout_marginTop="0";
     {
-      TextView;
-      textColor=文字;
-      textSize="16sp";
-      padding="16dp";
-      text="复制错误信息";
-      Background=转波纹(文字);
-      onClick=function()
-        --先导入包
-        import "android.content.*"
-        activity.getSystemService(Context.CLIPBOARD_SERVICE).setText(var32)
-      end;
+      LinearLayout;
+      layout_margin='18dp';
+      backgroundDrawable=边框(圆角大小,"#00000000",边框2,dp2px("1"));
+      layout_marginTop="0";
+      {
+        TextView;
+        textColor=文字;
+        textSize="16sp";
+        padding="16dp";
+        text="复制错误信息";
+        Background=转波纹(文字);
+        onClick=function()
+          --先导入包
+          import "android.content.*"
+          activity.getSystemService(Context.CLIPBOARD_SERVICE).setText(var32)
+        end;
+      };
     };
-  };
-  {
-    LinearLayout;
-    layout_margin='18dp';
-    backgroundDrawable=边框(圆角大小,"#00000000",边框2,dp2px("1"));
-    layout_marginTop="0";
-    id="源码";
     {
-      TextView;
-      id="内容TextView";
-      textColor=文字;
-      textSize="16sp";
-      padding="16dp";
-      text="搜索错误信息";
-      Background=转波纹(文字);
-      onClick=function()
-        弹出搜索(nil,nil,var32)
-      end;
+      LinearLayout;
+      layout_margin='18dp';
+      backgroundDrawable=边框(圆角大小,"#00000000",边框2,dp2px("1"));
+      layout_marginTop="0";
+      id="源码";
+      {
+        TextView;
+        id="内容TextView";
+        textColor=文字;
+        textSize="16sp";
+        padding="16dp";
+        text="搜索错误信息";
+        Background=转波纹(文字);
+        onClick=function()
+          弹出搜索(nil,nil,var32)
+        end;
+      };
     };
-  };
-  {
-    LinearLayout;
-    layout_margin='18dp';
-    backgroundDrawable=边框(圆角大小,"#00000000",边框2,dp2px("1"));
-    layout_marginTop="0";
-    id="源码";
     {
-      TextView;
-      id="内容TextView";
-      textColor=文字;
-      textSize="16sp";
-      padding="16dp";
-      text="刷新";
-      Background=转波纹(文字);
-      onClick=function()
-        隐藏控件(网页加载失败背景)
-        浏览器菜单("刷新网页",false,nil,nil)
-      end;
+      LinearLayout;
+      layout_margin='18dp';
+      backgroundDrawable=边框(圆角大小,"#00000000",边框2,dp2px("1"));
+      layout_marginTop="0";
+      id="源码";
+      {
+        TextView;
+        id="内容TextView";
+        textColor=文字;
+        textSize="16sp";
+        padding="16dp";
+        text="刷新";
+        Background=转波纹(文字);
+        onClick=function()
+          隐藏控件(网页加载失败背景)
+          浏览器菜单("刷新网页",false,nil,nil)
+        end;
+      };
     };
-  };
-  {
-    LinearLayout;
-    layout_margin='18dp';
-    backgroundDrawable=边框(圆角大小,"#00000000",边框2,dp2px("1"));
-    layout_marginTop="0";
-    id="源码";
     {
-      TextView;
-      id="内容TextView";
-      textColor=文字;
-      textSize="16sp";
-      padding="16dp";
-      text="WIFI设置";
-      Background=转波纹(文字);
-      onClick=function()
-        import "android.content.Intent"
-        import "android.provider.Settings"
-        intent = Intent(Settings.ACTION_WIFI_SETTINGS)
-        this.startActivity(intent)
-      end;
+      LinearLayout;
+      layout_margin='18dp';
+      backgroundDrawable=边框(圆角大小,"#00000000",边框2,dp2px("1"));
+      layout_marginTop="0";
+      id="源码";
+      {
+        TextView;
+        id="内容TextView";
+        textColor=文字;
+        textSize="16sp";
+        padding="16dp";
+        text="WIFI设置";
+        Background=转波纹(文字);
+        onClick=function()
+          import "android.content.Intent"
+          import "android.provider.Settings"
+          intent = Intent(Settings.ACTION_WIFI_SETTINGS)
+          this.startActivity(intent)
+        end;
+      };
     };
-  };
-  {
-    LinearLayout;
-    layout_margin='18dp';
-    backgroundDrawable=边框(圆角大小,"#00000000",边框2,dp2px("1"));
-    layout_marginTop="0";
-    id="源码";
     {
-      TextView;
-      id="内容TextView";
-      textColor=文字;
-      textSize="16sp";
-      padding="16dp";
-      text="移动网络设置";
-      Background=转波纹(文字);
-      onClick=function()
-        import "android.content.Intent"
-        import "android.provider.Settings"
-        intent = Intent(Settings.ACTION_DATA_ROAMING_SETTINGS)
-        this.startActivity(intent)
-      end;
+      LinearLayout;
+      layout_margin='18dp';
+      backgroundDrawable=边框(圆角大小,"#00000000",边框2,dp2px("1"));
+      layout_marginTop="0";
+      id="源码";
+      {
+        TextView;
+        id="内容TextView";
+        textColor=文字;
+        textSize="16sp";
+        padding="16dp";
+        text="移动网络设置";
+        Background=转波纹(文字);
+        onClick=function()
+          import "android.content.Intent"
+          import "android.provider.Settings"
+          intent = Intent(Settings.ACTION_DATA_ROAMING_SETTINGS)
+          this.startActivity(intent)
+        end;
+      };
     };
   };
 }
