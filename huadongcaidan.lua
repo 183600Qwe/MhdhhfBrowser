@@ -416,7 +416,7 @@ if 菜单滑动菜单=="打开" or 滑动菜单模式=="打开" then
 
     --浏览器菜单(项目,false,常用工具ftb2,true)--LinearLayout2
     end,function()
-    弹出搜索(true)
+    弹出搜索()
     end,function()
     显示控件(右菜单)
     显示控件(右菜单菜单工具箱GridView)

@@ -24,6 +24,9 @@ webapi={}
 阅读进度记录id列表={}
 
 
+网页列表表={}
+
+
 webtmp={
   homeUrl="https://leftshine.gitee.io/viaindex/defaultpage/index.html"
 }
@@ -32,8 +35,13 @@ webtmp={
 
 
 function newSetting(view,是否不设置下载)
-  --view.getSettings().setDisplayZoomControls(false); --隐藏自带的右下角缩放控件
+  --[[view.getSettings().setDisplayZoomControls(false); --隐藏自带的右下角缩放控件
   view.getSettings().setSupportZoom(true); --支持网页缩放
+view.getSettings().setSupportZoom(true);
+    --设置出现缩放工具
+    view.getSettings().setBuiltInZoomControls(true);
+    --扩大比例的缩放
+    view.getSettings().setUseWideViewPort(true);]]
   view.getSettings().setDomStorageEnabled(true); --dom储存数据
   view.getSettings().setDatabaseEnabled(true); --数据库
   view.getSettings().setAppCacheEnabled(true); --启用缓存
@@ -48,20 +56,21 @@ function newSetting(view,是否不设置下载)
   view.getSettings().setUseWideViewPort(true) --图片自适应
   view.setLayerType(View.LAYER_TYPE_HARDWARE,nil);--硬件加速
   view.getSettings().setPluginsEnabled(true)--支持插件
-  view.getSettings().setCacheMode(view.getSettings().LOAD_DEFAULT);--设置缓存加载方式
+  -- view.getSettings().setUseWideViewPort(true)--自适应屏幕
+  view.getSettings().setCacheMode(view.getSettings().LOAD_CACHE_ELSE_NETWORK);--设置缓存加载方式
   view.getSettings().setLayoutAlgorithm(view.getSettings().LayoutAlgorithm.SINGLE_COLUMN)--支持重新布局
   --  view.getSettings().setGeolocationEnabled(true);--启用地理定位
   view.getSettings().setUseWideViewPort(false)--调整图片自适  view.removeView(view.getChildAt(0))--删除自带进度条
   -- view.getSettings().setAcceptThirdPartyCookies(true) --接受第三方cookie
   view.getSettings().setTextZoom(tonumber(网页字体大小))--字体大小
   view.getSettings().setUserAgentString(io.open("/data/data/"..activity.getPackageName().."/UA储存.xml"):read("*a"))
-  if io.open("/data/data/"..activity.getPackageName().."/网页缩放.xml"):read("*a")==("打开")
+  --[[if io.open("/data/data/"..activity.getPackageName().."/网页缩放.xml"):read("*a")==("打开")
     view.getSettings().setSupportZoom(true);
     --设置出现缩放工具
     view.getSettings().setBuiltInZoomControls(true);
     --扩大比例的缩放
     view.getSettings().setUseWideViewPort(true);
-  end
+  end]]
   function Too_young()
     view.setDownloadListener{onDownloadStart=function(url,userAgent,contentDisposition,mimetype,contentLength)
         文件名=URLUtil.guessFileName(url, contentDisposition, mimeType);
@@ -119,7 +128,7 @@ local function addOnLongClick(view,self)
             print("图片已保存于"..picture)
           end)
         end
-        menu.add("保存动态图片").onMenuItemClick=function(a)
+        menu.add("保存动图").onMenuItemClick=function(a)
           picUrl = hitTestResult.getExtra()
           Http.download(picUrl,picture..os.date("%Y-%m-%d-%H-%M-%S")..".gif",function(a)
             print("图片已保存于"..picture)
@@ -130,11 +139,11 @@ local function addOnLongClick(view,self)
           v.loadUrl("https://pic.sogou.com/pic/ris_searchList.jsp?statref=home&v=5&ul=1&keyword="..picUrl)
           print("正在识图....")
         end
-        menu.add("查看图片").onMenuItemClick=function(a)
+                 menu.add("在当前标签页查看图片").onMenuItemClick=function(a)
           picUrl = hitTestResult.getExtra()
           v.loadUrl(picUrl)
         end
-        menu.add("复制图片链接").onMenuItemClick=function(a)
+       menu.add("复制图片链接").onMenuItemClick=function(a)
           picUrl = hitTestResult.getExtra()
           --先导入包
           import "android.content.*"
@@ -147,7 +156,7 @@ local function addOnLongClick(view,self)
             Sharing(picture..os.date("%Y-%m-%d-%H-%M-%S")..".png")
           end)
         end
-        menu.add("分享动态图片").onMenuItemClick=function(a)
+        menu.add("分享动图").onMenuItemClick=function(a)
           picUrl = hitTestResult.getExtra()
           Http.download(picUrl,picture..os.date("%Y-%m-%d-%H-%M-%S")..".gif",function(a)
             Sharing(picture..os.date("%Y-%m-%d-%H-%M-%S")..".gif")
@@ -155,26 +164,36 @@ local function addOnLongClick(view,self)
         end
         pop.show()--显示
        elseif hitTestResult.getType() == WebView.HitTestResult.SRC_ANCHOR_TYPE or hitTestResult.getType() == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE then
-        menu.add("分享链接").onMenuItemClick=function(a)
-          picUrl = hitTestResult.getExtra()
-          制造一个新的浏览器(picUrl,function(view,url)
-            分享链接(view.Title,picUrl)
-          end)
+                      menu.add("在新窗口打开").onMenuItemClick=function(a)
+          --webview(hitTestResult.getExtra())
+          webviewp:openNewUrl(hitTestResult.getExtra())
         end
-        menu.add("复制链接").onMenuItemClick=function(a)
+        menu.add("后台打开").onMenuItemClick=function(a)
+          --webview(hitTestResult.getExtra(),true)
+          webviewp:openNewUrl(hitTestResult.getExtra(),true)
+        end
+    menu.add("——").onMenuItemClick=function(a)
+        end
+   menu.add("复制链接").onMenuItemClick=function(a)
           picUrl = hitTestResult.getExtra()
           --先导入包
           import "android.content.*"
           activity.getSystemService(Context.CLIPBOARD_SERVICE).setText(picUrl)
           print("已复制")
         end
-        menu.add("收藏网页").onMenuItemClick=function(a)
+ menu.add("分享链接").onMenuItemClick=function(a)
+          picUrl = hitTestResult.getExtra()
+          制造一个新的浏览器(picUrl,function(view,url)
+            分享链接(view.Title,picUrl)
+          end)
+        end
+                menu.add("收藏链接").onMenuItemClick=function(a)
           picUrl = hitTestResult.getExtra()
           制造一个新的浏览器(picUrl,function(view,url)
             保存收藏(view.title,view.Url)
           end)
         end
-        menu.add("保存网页").onMenuItemClick=function(a)
+        menu.add("保存所选网页").onMenuItemClick=function(a)
           picUrl = hitTestResult.getExtra()
           制造一个新的浏览器(picUrl,function(view,url)
             pop=PopupMenu(activity,z)
@@ -202,16 +221,6 @@ local function addOnLongClick(view,self)
             end
             pop.show()--显示@音六站长～
           end)
-        end
-        menu.add("——").onMenuItemClick=function(a)
-        end
-        menu.add("在新窗口打开").onMenuItemClick=function(a)
-          --webview(hitTestResult.getExtra())
-          webviewp:openNewUrl(hitTestResult.getExtra())
-        end
-        menu.add("后台打开").onMenuItemClick=function(a)
-          --webview(hitTestResult.getExtra(),true)
-          webviewp:openNewUrl(hitTestResult.getExtra(),true)
         end
         pop.show()--显示
         --print(tostring(hitTestResult.Class.getSimpleName()))
@@ -298,8 +307,9 @@ function newWebViewClient(view,self)
           end
 
           url=tostring(view.Url)
-          当前查看的页面=当前查看的页面+1
-          if 当前查看的页面<#网页列表 then
+          local 网页列表=网页列表表[当前窗口].网页列表
+          网页列表表[当前窗口].当前查看的页面=当前查看的页面+1
+          if 网页列表表[当前窗口].当前查看的页面<#网页列表 then
             local 网页列表2={}
             --修改网页列表里的链接
             for d in pairs(网页列表) do
@@ -336,6 +346,7 @@ function newWebViewClient(view,self)
         if view==weblist[当前窗口] then
           设置右上角按钮图标("png/mklj.png")
           自动变色()
+          刷新标题()
         end
         task(20,function()
           if 是否显示主页列表[当前窗口]==false then
@@ -355,15 +366,11 @@ function newWebViewClient(view,self)
           end
         end)
         无痕模式=io.open("/data/data/"..activity.getPackageName().."/无痕模式.xml"):read("*a")
-        if 无痕模式=="打开" then
-         else
+        if 无痕模式=="关闭" then
           内容=io.open("/data/data/"..activity.getPackageName().."/历史记录保存.xml"):read("*a")
-          写入文件("/data/data/"..activity.getPackageName().."/历史记录保存.xml",获取内容(view.title,view.Url)..内容)
+          写入文件("/data/data/"..activity.getPackageName().."/历史记录保存.xml",获取历史记录项目内容(view.title,Url)..内容)
         end
         进度条.Width=0
-        if view==weblist[当前窗口] then
-          刷新标题()
-        end
         网页加载状态列表[当前窗口]=true
         --adp.getData()[窗口]={icon=view.getFavicon(),id=self:findWebView(view),title=view.getTitle(),progress=view.getProgress()}
 
@@ -385,17 +392,17 @@ function newWebViewClient(view,self)
           end
         end
       end,
-      onReceivedError=function(view,var2,var3,var4)
+      onReceivedError=function(_,_,var3,var4)
         var32=var3
         主页.addView(loadlayout("layout/jiazaicuowu"))--添加控件
         错误信息.text=(tostring(var3).."\n"..var4)
         网页加载失败页面=true
     end}
     view.setWebChromeClient(luajava.override(luajava.bindClass "android.webkit.WebChromeClient",{
-      onReceivedTitle=function(super,view,title)
+      --[[onReceivedTitle=function(super,view,title)
         --pcall(self.imp.webchange,view,{icon=view.getFavicon(),id=self:findWebView(view),title=title,progress=view.getProgress()})
 
-      end,
+      end,]]
       onReceivedIcon=function(super,view,title)
         if 是否显示主页列表[当前窗口]==false then
           pcall(self.imp.webchange,view,{icon={src=view.getFavicon(),ColorFilter=0},id=self:findWebView(view),title=view.getTitle(),progress=view.getProgress()})
@@ -411,10 +418,12 @@ function newWebViewClient(view,self)
     import "com.lua.*"
     --进度改变事件
     view.setWebChromeClient(LuaWebChrome(LuaWebChrome.IWebChrine{
-      onProgressChanged=function(view, newProgress)
+      onProgressChanged=function(_, newProgress)
         --事件
         进度条.Width=activity.Width/100*newProgress
-        if newProgress==100
+  --a=ScaleAnimation(1, 1, 1, int pivotXType, float pivotXValue, int pivotYType, float pivotYValue)
+--a.repeatCount=(1)
+        if newProgress==100 then
           --控件不可视
           进度条.setVisibility(View.INVISIBLE)
          else
@@ -424,7 +433,7 @@ function newWebViewClient(view,self)
         -- pbar.Progress=newProgress
         --print(newProgress)
       end,
-      onJsConfirm=function(view,url,str,result)
+      onJsConfirm=function(_,_,str,_)
         对话框({
           标题="来自网页的提示",
           点击事件=function()end,
@@ -586,6 +595,7 @@ function webapi:openNewUrl(url,istrue)
   webView=self:newWebView()
   addOnLongClick(webView,self)
   table.insert(weblist,webView)
+  table.insert(网页列表表,{网页列表={},当前查看的页面=1})
   table.insert(weblistidtofindfast,webView.getId())
   if not(istrue) then
     parent.removeAllViewsInLayout()
@@ -622,27 +632,6 @@ end
 webapi.imp={}
 
 
-function 刷新标题()
-  if 是否显示主页列表[当前窗口] then
-   else
-    标题显示内容=io.open("/data/data/"..activity.getPackageName().."/标题显示内容.xml"):read("*a")
-    if 标题显示内容=="网页标题" then
-      标题t.text=view.getTitle()
-      底栏标题t.text=view.getTitle()
-     elseif 标题显示内容=="网页域名" then
-      import "android.net.Uri"
-      标题t.text=Uri.parse(view.url).authority
-      底栏标题t.text=Uri.parse(view.url).authority
-     elseif 标题显示内容=="网页链接" then
-      标题t.text=view.Url
-      底栏标题t.text=view.Url
-    end
-  end
-end
-function 设置右上角按钮图标(图标)
-  Sideslip1.setImageBitmap(loadbitmap(图标))
-  底栏Sideslip1.setImageBitmap(loadbitmap(图标))
-end
 function build(args)
   _G[args.id]=table.clone(webapi)
   webtmp["multiText"]=args["multiText"]

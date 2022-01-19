@@ -28,7 +28,7 @@ import "mods.shuqianlishi"
 function 离开布局页面()
   是否正在查看布局页面=false
   设置右上角按钮图标("png/qwetyi.png")
-  网页加载状态="末完成"
+  网页加载状态列表[当前窗口]=false
   if 全屏模式状态=="关闭" then
     if 是否把标题栏放到底栏中=="关闭" then
       if AWidth<AHeight then
@@ -123,11 +123,10 @@ end
 import "view.MultiWebView"
 import "view.MultiTextView"--import "view.BottomBar"
 主页布局=loadlayout("layout")
-if 滑动菜单模式=="打开" then
- else
-  mToolbar3外.addView(loadlayout("layout/zhuye/mActionBar"))
-  悬浮按钮外.addView(loadlayout("layout/zhuye/xuanfuanniu"))
-end
+双悬浮按钮模式=io.open("/data/data/"..activity.getPackageName().."/双悬浮按钮模式.xml"):read("*a")
+是否全屏=滑动菜单模式=="打开" or 双悬浮按钮模式=="打开"
+是否全屏2=滑动菜单模式=="关闭" or 是否把标题栏放到底栏中时不需要点击切换窗口按钮就可以切换窗口=="打开"
+mToolbar3外.addView(loadlayout("layout/zhuye/mActionBar"))
 是否启用新的滑动菜单样式=io.open("/data/data/"..activity.getPackageName().."/是否启用新的滑动菜单样式.xml"):read("*a")
 if 是否启用新的滑动菜单样式=="打开" then
   隐藏控件(ftb2)
@@ -143,12 +142,7 @@ if 是否启用新的滑动菜单样式=="打开" then
 end
 
 --import "view.MultiTextView"--import "view.BottomBar"
-
-if 滑动菜单模式=="关闭" then
-  import "mods.gongjulan"
-end
-_,低栏高度=getwh(底部栏2)
-打开网页列表.addView(loadlayout(
+a=loadlayout(
 {
   FrameLayout,--帧布局
   layout_width="fill",--布局宽度
@@ -167,7 +161,13 @@ _,低栏高度=getwh(底部栏2)
     --BackgroundDrawable=转波纹(0xffffffff)
   }
 }--结束
-))
+)
+--if 是否全屏2 then
+import "mods.gongjulan"
+w,低栏高度=getwh(底部栏2)
+打开网页列表.addView(a)
+--end
+
 webviewp外.addView(loadlayout(
 {
   MultiWebView
@@ -185,13 +185,11 @@ viewy=view
 
 
 
-输入框诗句=io.open("/data/data/"..activity.getPackageName().."/输入框诗句.xml"):read("*a")
-if 输入框诗句=="打开" then
+输入框内容=io.open("/data/data/"..activity.getPackageName().."/输入框内容.xml"):read("*a")
+if 主页搜索hint=="诗句" then
   import "mods/shiju"
   local rand=math.random(#aword-#aword+1,#aword)
   主页搜索hint=aword[rand]
- else
-  主页搜索hint="输入网址或搜索"
 end
 activity.ActionBar.hide()
 loadfile("/data/data/"..activity.getPackageName().."/程序启动事件.lua")()
@@ -255,16 +253,7 @@ task(1,function()
   双悬浮按钮中的左侧按钮=io.open("/data/data/"..activity.getPackageName().."/双悬浮按钮中的左侧按钮.xml"):read("*a")
   双悬浮按钮中的右侧按钮=io.open("/data/data/"..activity.getPackageName().."/双悬浮按钮中的右侧按钮.xml"):read("*a")
   双悬浮按钮模式=io.open("/data/data/"..activity.getPackageName().."/双悬浮按钮模式.xml"):read("*a")
-  if 双悬浮按钮模式=="打开" then
-    if 是否把标题栏放到底栏中时不需要点击切换窗口按钮就可以切换窗口=="打开" then
-      隐藏控件(返回主页)
-      隐藏控件(打开菜单)
-     else
-      隐藏控件(底部栏2)
-    end
-    隐藏控件(mToolbar3)
-    隐藏控件(顶部代替paddingTop)
-  end
+
   if 双悬浮按钮中的左侧按钮=="打开" or 双悬浮按钮模式=="打开" then
    else
     隐藏控件(ftba)
@@ -299,8 +288,6 @@ task(1,function()
   import "hua"
 
 
-  双悬浮按钮模式=io.open("/data/data/"..activity.getPackageName().."/双悬浮按钮模式.xml"):read("*a")
-  是否全屏=滑动菜单模式=="打开" or 双悬浮按钮模式=="打开"
   主页搜索padding="16dp"
   底栏mToolbar3width=1
   底栏mToolbar3width=底栏mToolbar3width-0.11
@@ -314,12 +301,12 @@ task(1,function()
    else
     隐藏控件(底栏窗口切换HorizontalScrollView)
   end
-  if 是否隐藏网页前进按钮=="打开" or 是否全屏 then
+  if 是否隐藏网页前进按钮=="打开" then
     隐藏控件(网页前进3)
    else
     底栏mToolbar3width=底栏mToolbar3width-0.11
   end
-  if 是否隐藏网页后退按钮=="打开" or 是否全屏 then
+  if 是否隐藏网页后退按钮=="打开" then
     隐藏控件(网页后退LinearLayout)
    else
     底栏mToolbar3width=底栏mToolbar3width-0.11
@@ -362,7 +349,7 @@ task(1,function()
         隐藏控件(底栏mToolbar3外)
         if 是否显示标题栏 then
           显示控件2(顶部代替paddingTop)
-          显示控件2(mToolbar3)
+          显示控件2(mToolbar3外2)
         end
       end
      else--info=land
@@ -388,7 +375,7 @@ task(1,function()
         显示控件(底栏mToolbar3外)
       end
       隐藏控件2(顶部代替paddingTop)
-      隐藏控件2(mToolbar3)
+      隐藏控件2(mToolbar3外2)
     end
     for d,a in pairs(onConfigurationChangedList) do
       a(是否横屏)
@@ -429,8 +416,9 @@ task(1,function()
   全屏模式状态=io.open("/data/data/"..activity.getPackageName().."/是否全屏.xml"):read("*a")
   if 全屏模式状态=="打开" then
     隐藏控件(底部栏2)
-    隐藏控件(mToolbar3)
+    隐藏控件(mToolbar3外2)
     隐藏控件(顶部代替paddingTop)
+    悬浮按钮外.addView(loadlayout("layout/zhuye/xuanfuanniu"))
     --控件可视
     悬浮按钮.setVisibility(View.VISIBLE)
    else
@@ -438,27 +426,26 @@ task(1,function()
     if 主页链接=="收藏带搜索栏" then
      elseif 主页链接=="标志加搜索栏加网格收藏" then
      else
-      显示控件(mToolbar3)
+      显示控件(mToolbar3外2)
       显示控件(顶部代替paddingTop)
     end
-    ftb.setVisibility(View.INVISIBLE)
   end
 
-  if 滑动菜单模式=="打开" then
+  if 是否全屏 then
     if 是否把标题栏放到底栏中时不需要点击切换窗口按钮就可以切换窗口=="打开" then
       隐藏控件(返回主页)
       隐藏控件(打开菜单)
-     else
-      隐藏控件(底部栏2)
+      --else
+      --隐藏控件(底部栏2)
     end
-    隐藏控件(mToolbar3)
-    隐藏控件(顶部代替paddingTop)
+    --隐藏控件(mToolbar3)
+    --隐藏控件(顶部代替paddingTop)
    else
     显示控件(底部栏2)
     if 主页链接=="收藏带搜索栏" then
      elseif 主页链接=="标志加搜索栏加网格收藏" then
      else
-      显示控件(mToolbar3)
+      显示控件(mToolbar3外2)
       显示控件(顶部代替paddingTop)
     end
     是否把标题栏放到底栏中=io.open("/data/data/"..activity.getPackageName().."/是否把标题栏放到底栏中.xml"):read("*a")
@@ -470,11 +457,7 @@ task(1,function()
       网页标题副父布局.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
     end
   end
-  ftb_two.setVisibility(View.INVISIBLE)
-  ftb_three.setVisibility(View.INVISIBLE)
-  ftb_four.setVisibility(View.INVISIBLE)
-  ftb_five.setVisibility(View.INVISIBLE)
-  ftb_six.setVisibility(View.INVISIBLE)
+
   --task(1,function()
   import "shu2"
 
@@ -629,13 +612,13 @@ task(1,function()
 
 
 
-        if 网页加载状态=="末完成" then
+        if not 网页加载状态列表[当前窗口] then
           view.stopLoading()
         end
        elseif 主页链接=="收藏带搜索栏" then
         是否显示标题栏=false
         是否正在查看布局页面=true
-        隐藏控件2(mToolbar3)
+        隐藏控件2(mToolbar3外2)
         隐藏控件2(顶部代替paddingTop)
         --控件可视
         vngggggg.setVisibility(View.VISIBLE)
@@ -656,7 +639,7 @@ task(1,function()
 
 
 
-        if 网页加载状态=="末完成" then
+        if not 网页加载状态列表[当前窗口] then
           view.stopLoading()
         end
        elseif 主页链接=="仅搜索栏" then
@@ -665,7 +648,7 @@ task(1,function()
         end
         是否显示标题栏=false
         是否正在查看布局页面=true
-        隐藏控件2(mToolbar3)
+        隐藏控件2(mToolbar3外2)
         隐藏控件2(顶部代替paddingTop)
         --控件可视
         vngggggg.setVisibility(View.VISIBLE)
@@ -687,7 +670,7 @@ task(1,function()
 
 
 
-        if 网页加载状态=="末完成" then
+        if not 网页加载状态列表[当前窗口] then
           view.stopLoading()
         end
        else
@@ -715,11 +698,27 @@ task(1,function()
           local 点击的窗口=当前窗口
           local 长按的窗口=当前窗口
           列表LinearLayout.onClick=function()
-            if 点击的窗口==当前窗口 then
-              弹出搜索()
+            if 状态6 then
+              if 点击的窗口==当前窗口 then
+                popw.dismiss()
+               else
+                webviewp:select(上一个窗口id)
+                上一个窗口id=上一个窗口id2
+              end
+              webviewp:remove(点击的窗口)
+              震动(20)
              else
-              webviewp:select(点击的窗口)
+              if 点击的窗口==当前窗口 then
+                弹出搜索()
+               else
+                上一个窗口id2=上一个窗口id
+                webviewp:select(点击的窗口)
+              end
             end
+            状态6=true
+            task(300,function()
+              状态6=false
+            end)
           end
           列表LinearLayout.onLongClick=function()
             窗口切换长按菜单(长按的窗口,底栏窗口切换列表id表[长按的窗口].列表LinearLayout2)
@@ -739,7 +738,7 @@ task(1,function()
   end
   当前窗口=1
   返回主页f(当前窗口)
-  if 滑动菜单模式=="打开" then
+  if 是否全屏 then
    else
     返回主页.onClick=返回主页f
   end
@@ -828,6 +827,36 @@ task(1,function()
     end)
 
     webviewp:setOnWebViewDelete(function(view,info)
+      local 关闭的标签页=io.open("/data/data/"..activity.getPackageName().."/关闭的标签页.xml"):read("*a")
+      关闭的标签页=string2tab(关闭的标签页)
+      mWebBackForwardList=view.copyBackForwardList()
+      mWebBackForwardListSize=mWebBackForwardList.getSize()-1
+      local 当前页面=mWebBackForwardList.getCurrentItem()
+      --if mWebBackForwardListSize>0 then
+      --print(mWebBackForwardList.getCurrentItem())
+      --print(mWebBackForwardList.getItemAtIndex(0))
+      --创建一个空的列表为datas(列表就是可以存放多个数据的意思)
+      local datas={}
+
+
+      --循环添加匹配有数据的列表到
+      --nj只是一个变量，你可以用其他变量代替
+      --在lua中#用来测长度，所以#aw,因为aw里面有3个数据，所以#aw=3
+      --就相当于  for  1,3   do
+      for nj=0,mWebBackForwardListSize do
+        local mItemAtIndex=mWebBackForwardList.getItemAtIndex(nj)
+        --print(mItemAtIndex.getFavicon())
+        --给空的datas添加所有的数据
+        --格式为  table.insert(空列表名称,{id=数据列表[nj]})
+        table.insert(datas,{title=mItemAtIndex.getTitle(),Url=mItemAtIndex.getUrl()})
+      end
+
+      local datas2={
+        datas=datas,
+        当前页面={title=当前页面.getTitle(),Url=当前页面.getUrl()}
+      }
+      table.insert(关闭的标签页,datas2)
+      写入文件("/data/data/"..activity.getPackageName().."/关闭的标签页.xml",dump(关闭的标签页))
       保存阅读进度()
       table.remove(adp.getData(),info.id)
       print("已删除 "..info.title)
@@ -863,7 +892,7 @@ task(1,function()
           ListView,--列表视图控件
           layout_width="fill",--布局宽度
           --layout_height="80%h",--布局高度
-          dividerHeight="0",--分割线高度
+          dividerHeight=0,--分割线高度
           id="多窗口list",
           paddingTop="30dp";
           paddingBottom="0";
@@ -947,7 +976,7 @@ task(1,function()
       pop=PopupMenu(activity,控件ID)
       menu=pop.Menu
       if 长按的窗口==当前窗口 then
-        if 网页加载状态列表[当前窗口] then
+        if not 网页加载状态列表[当前窗口] then
           menu.add("刷新").onMenuItemClick=function(a)
             view.reload()--刷新页面
             刷新状态="刷新"
@@ -992,7 +1021,7 @@ end]]
 
     --按两次返回退出页面
     --没加退出webview那些高端玩意，你们来
-    if 滑动菜单模式=="打开" then
+    if 是否全屏 then
      else
       Sideslip.onClick=function()
         浏览器菜单("刷新网页")
@@ -1072,7 +1101,7 @@ end
               if 全屏模式状态=="关闭" then
                 if 记录2==0
                   显示控件2(顶部代替paddingTop)
-                  显示控件2(mToolbar3)
+                  显示控件2(mToolbar3外2)
                   显示控件2(底部栏2)
                  elseif 记录2<获取浏览器滑动位置(view)
                   linearParams2 = mToolbar3.getLayoutParams()
@@ -1108,7 +1137,7 @@ end
                     动画是否正在执行=true
                     task(15,function()
                       隐藏控件2(顶部代替paddingTop)
-                      隐藏控件2(mToolbar3)
+                      隐藏控件2(mToolbar3外2)
                       隐藏控件2(底部栏2)
                       动画是否正在执行=false
                     end)
@@ -1137,7 +1166,7 @@ end
                     底部栏2.startAnimation(yuxuandh3);
                   end
                   显示控件2(顶部代替paddingTop)
-                  显示控件2(mToolbar3)
+                  显示控件2(mToolbar3外2)
                   显示控件2(底部栏2)
                 end
                 记录2=获取浏览器滑动位置(view)
@@ -1177,8 +1206,8 @@ end
     --import "android.graphics.PorterDuff"
     --修改ProgressBar颜色
     --pbar.ProgressDrawable.setColorFilter(PorterDuffColorFilter(文字,PorterDuff.Mode.SRC_ATOP))
+    --mToolbar3外.Elevation=dp2px(5);
     mToolbar3外.Elevation=dp2px(5);
-    mToolbar3外2.Elevation=dp2px(5);
     --设置TypeFace
     --import "android.graphics.Typeface"
     --标题t.getPaint().setTypeface(Typeface.MONOSPACE)
@@ -1189,12 +1218,12 @@ end
     activity.getWindow().setFormat(PixelFormat.TRANSLUCENT);
     --ftb=打开菜单
 
-    if 滑动菜单模式~="打开" then
+    if not 是否全屏 then
       if 全屏模式状态=="打开" then
         import "mods/xuanfuqiu"
       end
       if 底栏样式=="搜索样式" then
-        隐藏控件2(mToolbar3)
+        隐藏控件2(mToolbar3外2)
         隐藏控件(ids.ftb_five)
        elseif 底栏样式=="书签样式" then
         隐藏控件(ids.ftb_five)
@@ -1422,9 +1451,9 @@ end
       上翻按钮.onClick=function()
         view.ScrollY=view.ScrollY-viewh
       end;
-      双悬浮按钮中的左侧按钮=io.open("/data/data/"..activity.getPackageName().."/双悬浮按钮中的左侧按钮.xml"):read("*a")
+      --[[双悬浮按钮中的左侧按钮=io.open("/data/data/"..activity.getPackageName().."/双悬浮按钮中的左侧按钮.xml"):read("*a")
       双悬浮按钮中的右侧按钮=io.open("/data/data/"..activity.getPackageName().."/双悬浮按钮中的右侧按钮.xml"):read("*a")
-      双悬浮按钮模式=io.open("/data/data/"..activity.getPackageName().."/双悬浮按钮模式.xml"):read("*a")
+      双悬浮按钮模式=io.open("/data/data/"..activity.getPackageName().."/双悬浮按钮模式.xml"):read("*a")]]
       a=function()
         id=ftba
         --[[id.onClick=function(v,event)
@@ -1569,7 +1598,7 @@ end
                 import "android.content.Context"
                 震动(25)
                 --打开工具箱()
-                弹出搜索(true)
+                弹出搜索()
                 状态6=true
                 task(200,function()
                   状态6=false
@@ -1578,7 +1607,7 @@ end
                 --上滑事件
                 import "android.content.Context"
                 震动(25)
-                弹出搜索(true)
+                弹出搜索()
                 状态6=true
                 task(200,function()
                   状态6=false

@@ -51,12 +51,14 @@ function 浏览器菜单(文本,是否在悬浮窗,id,a)
           显示控件(vngggggg悬浮窗历史记录)
         end
       end
+      vngggggg悬浮窗2=vngggggg悬浮窗
       showDataDialog(名称,"书签",true)
       if 文本=="书签" then
         vngggggg悬浮窗书签=vngggggg悬浮窗
        else
         vngggggg悬浮窗历史记录=vngggggg悬浮窗
       end
+      vngggggg悬浮窗=vngggggg悬浮窗2
       悬浮窗收藏2.addView(listlayout)--添加控件
       主页搜索2.setVisibility(View.GONE)
       yuxuandh4=TranslateAnimation(0,0,0,activity.height)
@@ -215,7 +217,7 @@ function 浏览器菜单(文本,是否在悬浮窗,id,a)
           写入文件("/data/data/"..activity.getPackageName().."/背景色颜色码.xml",当前颜色)
           view.reload()--刷新页面
         end
-    end})
+      end})
    elseif 文本=="翻译网页" then
     if view.url then
       import "java.lang.String"
@@ -294,7 +296,7 @@ function 浏览器菜单(文本,是否在悬浮窗,id,a)
         onProgressChanged=function()
           --状态改变
           textView.text="每隔"..tostring(seekBar.getProgress()+1).."分钟刷新一次"
-      end}
+        end}
       --状态改变
       textView.text="每隔"..tostring(seekBar.getProgress()+1).."分钟刷新一次"
       拖动条颜色(seekBar,Color.parseColor(一般强调色))
@@ -391,7 +393,7 @@ function 浏览器菜单(文本,是否在悬浮窗,id,a)
         -- 这个方法不能在截图时才调用
         -- 如果不调用此方法，不可视的部分将无法截取到
       end
-      savePicture(websave..view.getTitle()..".png",captureWeb(),false,true)
+      savePicture(websave..view.getTitle()..".png",captureWeb2(),false,true)
       print("已保存到:"..websave..view.getTitle()..".png")
       --注意
       --为避免踩雷，使用os.date应避免含有 / 的数值
@@ -432,7 +434,11 @@ function 浏览器菜单(文本,是否在悬浮窗,id,a)
     end
    elseif 文本=="悬浮窗" then
     运行代码含读取文件("xuanfuchuang")
-    showWindow(view.url)
+    if 是否显示主页列表[当前窗口] then
+      showWindow("")
+     else
+      showWindow(view.url)
+    end
    elseif 文本=="网页调试" then
     if JS储存 then
       加载Js(JS储存)
@@ -517,7 +523,9 @@ document.body.appendChild(pans);
             隐藏控件(翻页按钮)
           end
         end
-    end})
+      end})
+   elseif 文本=="打开菜单" then
+    打开菜单2()
    elseif 文本=="刷新网页" then
     if 网页加载状态列表[当前窗口] then
       view.reload()--刷新页面
@@ -662,7 +670,6 @@ function 获取itemc(高度)
     --   onTouchListener=点击监听,--动画效果
     {
       FrameLayout,
-      layout_width=圆环大小;
       layout_height=圆环大小,
       --Gravity="center",
       id="CardView",
@@ -687,7 +694,7 @@ function 获取itemc(高度)
         -- colorFilter=0xFFffffff;
         layout_gravity="center";
         textSize="12sp";
-        textColor=主页文字颜色;
+        textColor=文字;
         --   Typeface=字体("Product");
         id="TextView图标";
         Gravity="center",
@@ -698,7 +705,6 @@ function 获取itemc(高度)
     {
       TextView;
       -- colorFilter=0xFFffffff;
-      text=activity.Title;
       layout_gravity="center";
       textSize="14sp";
       textColor=文字123;
@@ -730,20 +736,41 @@ if 滑动菜单模式=="打开" then
  else
   function 打开菜单2()
     底部弹窗({
-      GridView;
-      fastScrollEnabled=true;
-      layout_width="fill";
-      background=背景2,
-      --padding="8dp";
-      clipToPadding=false;
-      ScrollBarStyle=ScrollView.SCROLLBARS_OUTSIDE_OVERLAY;
-      -- layout_height="40%w";--高度需要更苦list多少进行计算，或者自己根据自己的不同写表达式
-      --这里是分割线的意思
-      numColumns=4;--每排显示网格数
-      id="list3";
-      paddingTop="18dp";
-      paddingBottom="18dp";
-      layout_weight="1";
+      LinearLayout,--线性布局
+      orientation="vertical",--布局方向
+      layout_width="fill",--布局宽度
+      --[[ {
+        GridView;
+        fastScrollEnabled=true;
+        layout_width="fill";
+        background=较暗色2,
+        --padding="8dp";
+        clipToPadding=false;
+        ScrollBarStyle=ScrollView.SCROLLBARS_OUTSIDE_OVERLAY;
+        -- layout_height="40%w";--高度需要更苦list多少进行计算，或者自己根据自己的不同写表达式
+        --这里是分割线的意思
+        numColumns=1;--每排显示网格数
+        id="前进后退list";
+        paddingTop="18dp";
+        paddingBottom="18dp";
+        layout_weight="1";
+      },]]
+      {
+        GridView;
+        fastScrollEnabled=true;
+        layout_width="fill";
+        background=背景2,
+        --padding="8dp";
+        clipToPadding=false;
+        ScrollBarStyle=ScrollView.SCROLLBARS_OUTSIDE_OVERLAY;
+        -- layout_height="40%w";--高度需要更苦list多少进行计算，或者自己根据自己的不同写表达式
+        --这里是分割线的意思
+        numColumns=4;--每排显示网格数
+        id="list3";
+        paddingTop="18dp";
+        paddingBottom="18dp";
+        layout_weight="1";
+      },
     },
     {
       LinearLayout;
@@ -751,95 +778,79 @@ if 滑动菜单模式=="打开" then
       layout_gravity='right|center';
       id="右下角菜单";
       {
-        FrameLayout,
-        --  Orientation='vertical';
+        LinearLayout;
         layout_width='44dp';
         layout_height='44dp';
-        --BackgroundColor=背景2;
-        id="菜单刷新FrameLayout";
+        Gravity="center",
+        id="菜单刷新";
+        --onTouchListener=点击监听,--动画效果
+        onClick=function()
+          if 网页加载状态列表[当前窗口] then
+            view.reload()--刷新页面
+            刷新状态="刷新"
+           elseif 网页加载状态列表[当前窗口] then
+            view.stopLoading()
+          end
+          关闭对话框()
+        end,
         {
-          LinearLayout;
-          layout_width='fill';
-          layout_height='fill';
-          Gravity="center",
-          id="菜单刷新";
-          --onTouchListener=点击监听,--动画效果
-          onClick=function()
-            if 网页加载状态=="完成" then
-              view.reload()--刷新页面
-              刷新状态="刷新"
-             elseif 网页加载状态=="末完成" then
-              view.stopLoading()
-            end
-            关闭对话框()
-          end,
-          {
-            ImageView;
-            layout_height="26dp";
-            id="菜单刷新ImageView";
-            ColorFilter=文字,--图片颜色
-            layout_width="26dp";
-            -- layout_marginRight="17dp";
-          };
+          ImageView;
+          layout_height="26dp";
+          id="菜单刷新ImageView";
+          ColorFilter=文字,--图片颜色
+          layout_width="26dp";
+          -- layout_marginRight="17dp";
         };
       };
       {
-        FrameLayout,
-        --  Orientation='vertical';
+        LinearLayout;
         layout_width='44dp';
         layout_height='44dp';
-        --BackgroundColor=背景2;
         layout_marginRight="8dp";
-        id="全屏模式3";
-        {
-          LinearLayout;
-          layout_width='fill';
-          layout_height='fill';
-          Gravity="center",
-          id="全屏模式";
-          --onTouchListener=点击监听,--动画效果
-          onClick=function()
-            if 全屏模式状态=="关闭" then
-              全屏模式状态="打开"
-              隐藏控件(底部栏2)
-              隐藏控件(mToolbar3)
-              隐藏控件(顶部代替paddingTop)
-              --控件可视
-              悬浮按钮.setVisibility(View.VISIBLE)
-              写入文件("/data/data/"..activity.getPackageName().."/是否全屏.xml","打开")
-              --同理设置高度
-              linearParams = 页内查找LinearLayout.getLayoutParams()
-              linearParams.height =dp2px(164)+height
-              页内查找LinearLayout.setLayoutParams(linearParams)
-              ftb.setVisibility(View.VISIBLE)
-             else
-              全屏模式状态="关闭"
-              显示控件(底部栏2)
-              if 是否显示标题栏 then
-                显示控件(mToolbar3)
-                显示控件(顶部代替paddingTop)
-              end
-              --控件不可视
-              悬浮按钮.setVisibility(View.INVISIBLE)
-              写入文件("/data/data/"..activity.getPackageName().."/是否全屏.xml","关闭")
-              --同理设置高度
-              linearParams = 页内查找LinearLayout.getLayoutParams()
-              width,height=getwh(查找提示区)
-              linearParams.height =dp2px(88)+height
-              页内查找LinearLayout.setLayoutParams(linearParams)
+        Gravity="center",
+        id="全屏模式";
+        --onTouchListener=点击监听,--动画效果
+        onClick=function()
+          if 全屏模式状态=="关闭" then
+            全屏模式状态="打开"
+            隐藏控件(底部栏2)
+            隐藏控件(mToolbar3外2)
+            隐藏控件(顶部代替paddingTop)
+            悬浮按钮外.addView(loadlayout("layout/zhuye/xuanfuanniu"))
+            --控件可视
+            悬浮按钮.setVisibility(View.VISIBLE)
+            写入文件("/data/data/"..activity.getPackageName().."/是否全屏.xml","打开")
+            --同理设置高度
+            linearParams = 页内查找LinearLayout.getLayoutParams()
+            linearParams.height =dp2px(164)+height
+            页内查找LinearLayout.setLayoutParams(linearParams)
+            ftb.setVisibility(View.VISIBLE)
+           else
+            全屏模式状态="关闭"
+            显示控件(底部栏2)
+            if 是否显示标题栏 then
+              显示控件(mToolbar3外2)
+              显示控件(顶部代替paddingTop)
             end
-            关闭对话框()
-          end,
-          {
-            ImageView;
-            layout_height="26dp";
-            id="全屏模式2";
-            src="png/__ic_fltbtn3.png";
-            ColorFilter=文字,--图片颜色
-            layout_width="26dp";
-            -- layout_marginRight="17dp";
-            --layout_gravity='center';
-          };
+            --控件不可视
+            悬浮按钮.setVisibility(View.INVISIBLE)
+            写入文件("/data/data/"..activity.getPackageName().."/是否全屏.xml","关闭")
+            --同理设置高度
+            linearParams = 页内查找LinearLayout.getLayoutParams()
+            width,height=getwh(查找提示区)
+            linearParams.height =dp2px(88)+height
+            页内查找LinearLayout.setLayoutParams(linearParams)
+          end
+          关闭对话框()
+        end,
+        {
+          ImageView;
+          layout_height="26dp";
+                    src="png/__ic_fltbtn3.png";
+          ColorFilter=文字,--图片颜色
+          layout_width="26dp";
+          -- layout_marginRight="17dp";
+          --layout_gravity='center';
         };
       };
     }
@@ -847,9 +858,6 @@ if 滑动菜单模式=="打开" then
     --创建一个空的列表为datas(列表就是可以存放多个数据的意思)
     datas={}
 
-    --创建了三个有数据的列表
-    aic={}
-    --"当前为"..io.open("/data/data/"..activity.getPackageName().."/主页链接.xml"):read("*a")
 
 
     --循环添加匹配有数据的列表到
@@ -876,8 +884,45 @@ if 滑动菜单模式=="打开" then
       onItemClick=function(parent,v,pos,id)
         关闭对话框()
         浏览器菜单(v.Tag.标题.Text,false,v)
-    end})
+      end})
     list3.onItemLongClick=工具长按菜单
+    --[[local mWebBackForwardList=view.copyBackForwardList()
+    local mWebBackForwardListSize=mWebBackForwardList.getSize()-1
+    local 当前页面=mWebBackForwardList.getCurrentItem()
+    --if mWebBackForwardListSize>0 then
+    --print(mWebBackForwardList.getCurrentItem())
+    --print(mWebBackForwardList.getItemAtIndex(0))
+    --创建一个空的列表为datas(列表就是可以存放多个数据的意思)
+    local datas={}
+
+
+
+    --循环添加匹配有数据的列表到
+    --nj只是一个变量，你可以用其他变量代替
+    --在lua中#用来测长度，所以#aw,因为aw里面有3个数据，所以#aw=3
+    --就相当于  for  1,3   do
+    for nj=0,mWebBackForwardListSize do
+      local mItemAtIndex=mWebBackForwardList.getItemAtIndex(nj)
+      --print(mItemAtIndex.getFavicon())
+      if mItemAtIndex==当前页面 then
+        mBackground=小条2
+       else
+        mBackground=0
+      end
+      --给空的datas添加所有的数据
+      --格式为  table.insert(空列表名称,{id=数据列表[nj]})
+      table.insert(datas,{icon={src=mItemAtIndex.getFavicon(),ColorFilter=0},title={text=mItemAtIndex.getTitle()},列表LinearLayout={backgroundColor=mBackground}})
+    end
+
+
+    --
+    --table.insert(datas,{图标=aw3菜单2[nj],标题={text=mmpqwe2[nj]}})
+    --创建适配器，将datas里面的数据匹配给itemc小项目
+    yuxuan_adpqy=LuaAdapter(activity,datas,获取itemc2())
+
+    --将小项目匹配给大list
+    前进后退list.Adapter=yuxuan_adpqy]]
+    --end
   end
   function 打开工具箱()
     底部弹窗({
@@ -894,7 +939,6 @@ if 滑动菜单模式=="打开" then
       id="list3";
       paddingTop="18dp";
       --paddingBottom="18dp";
-      Gravity="center",
       layout_weight="1";
     })
     无图模式=io.open("/data/data/"..activity.getPackageName().."/无图模式.xml"):read("*a")
@@ -902,8 +946,6 @@ if 滑动菜单模式=="打开" then
     --创建一个空的列表为datas(列表就是可以存放多个数据的意思)
     datas={}
 
-    --创建了三个有数据的列表
-    aic={}
     --循环添加匹配有数据的列表到
     --nj只是一个变量，你可以用其他变量代替
     --在lua中#用来测长度，所以#aw,因为aw里面有3个数据，所以#aw=3
@@ -946,14 +988,15 @@ if 滑动菜单模式=="打开" then
     list3.setOnItemClickListener(AdapterView.OnItemClickListener{
       onItemClick=function(parent,v,pos,id)
         文本=v.Tag.标题.Text
-        if 文本=="保存网页" then
-         elseif 文本=="切换UA" then
-         elseif 文本=="横竖屏切换" then
+        浏览器菜单(文本,false,v)
+        if 文本=="保存网页" and
+          文本=="切换UA" and
+          文本=="横竖屏切换"
+          then
          else
           关闭对话框()
         end
-        浏览器菜单(文本,false,v)
-    end})
+      end})
     list3.onItemLongClick=工具长按菜单
   end
 end

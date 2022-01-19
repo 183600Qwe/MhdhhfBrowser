@@ -35,17 +35,29 @@ end
 
 -- 注意，此功能函数只返回位图，不保存为文件
 function captureWeb()
-  -- 对于安卓5.0以下，使用此方法
+   -- 对于安卓5.0以下，使用此方法
   -- FA只能5.0以上用，所以其实不需要做判断
   -- 对于安卓5.0以下的，可使用webView的一个自带方法，详细自己百度
   return getViewBitmap(view)
 end
-function captureWeb2()
-  -- 对于安卓5.0以下，使用此方法
-  -- FA只能5.0以上用，所以其实不需要做判断
-  -- 对于安卓5.0以下的，可使用webView的一个自带方法，详细自己百度
-  return getViewBitmap(view)
 
+-- 注意，此功能函数只返回位图，不保存为文件
+function captureWeb2()
+  if Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP then
+    print("正在获取截图\n请稍候")
+    -- 网页太长会造成卡顿，所以提示一下用户
+    bitmap=Bitmap.createBitmap(view.getWidth(),view.getContentHeight()*view.getScale(),Bitmap.Config.RGB_565)
+    -- bitmap的配置
+    canvas=Canvas(bitmap)
+    view.draw(canvas)
+    -- 把webView内容绘制到画布中
+    return bitmap
+   else
+    -- 对于安卓5.0以下，使用此方法
+    -- FA只能5.0以上用，所以其实不需要做判断
+    -- 对于安卓5.0以下的，可使用webView的一个自带方法，详细自己百度
+    return getViewBitmap(view)
+  end
 end
 
 --保存为图片文件
@@ -256,8 +268,8 @@ function 暗色模式亮色模式切换()
 
 end
 function 切换搜索引擎(id)
-  pop=PopupMenu(activity,id)
-  menu=pop.Menu
+  pop1=PopupMenu(activity,id)
+  menu1=pop1.Menu
   搜索引擎列表={
     {"百度搜索","https://www.baidu.com/s?word=搜索内容"},
     {"搜狗搜索","https://m.sogou.com/web/searchList.jsp?uID=HzeRJIpO7NJ4sZ0b&v=5&from=index&w=1274&t=1528636381841&s_t=1528636397379&s_from=index&keyword=搜索内容"},
@@ -273,11 +285,11 @@ function 切换搜索引擎(id)
     {"magi","https://magi.com/search?q=搜索内容"},
   }
   for k,v in ipairs(搜索引擎列表) do --遍历
-    menu.add(v[1]).onMenuItemClick=function(a)
+    menu1.add(v[1]).onMenuItemClick=function(a)
       写入文件("/data/data/"..activity.getPackageName().."/搜索URL.xml",v[2])
     end
   end
-  menu.add("自定义").onMenuItemClick=function(a)
+  menu1.add("自定义").onMenuItemClick=function(a)
     搜索URL=(io.open("/data/data/"..activity.getPackageName().."/搜索URL.xml"):read("*a"))
     对话框({
       标题="自定义",
@@ -289,7 +301,7 @@ function 切换搜索引擎(id)
       输入框文本=搜索URL
     })
   end
-  pop.show()--显示@音六站长～
+  pop1.show()--显示@音六站长～
 end
 import "android.view.Window"
 import "android.view.WindowManager"
@@ -616,4 +628,7 @@ function 底部弹窗(内layout,右下角菜单2)
   关闭对话框b=关闭对话框
   关闭.onClick=关闭对话框
   idmlz.onClick=关闭对话框
+end
+function 查看图片(src)
+  view.loadUrl(src)
 end

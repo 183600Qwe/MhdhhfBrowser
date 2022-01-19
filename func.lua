@@ -11,6 +11,7 @@ w=activity.width
 h=activity.height
 AWidth=w
 AHeight=h
+
 function 转0x(j)
   if #j==7 then
     jj=j:match("#(.+)")
@@ -39,6 +40,7 @@ end
 function 文件是否存在(id)
   return File(id).exists()
 end
+圆角大小=dp2px(15)
 新悬浮按钮常用工具列表={"添加书签",
   "页内查找",
   "悬浮窗",
@@ -81,8 +83,7 @@ end
   主页搜索栏圆角=圆角大小,
   主页图片背景="关闭",
   滑动返回="打开",
-  输入框诗句="打开",
-  标题栏色="#FFFAFAFA",
+    标题栏色="#FFFAFAFA",
   标题栏组件是否暗色="暗色",
   底栏样式="一般样式",
   是否全屏="关闭",
@@ -133,10 +134,15 @@ end
   双悬浮按钮中的左侧按钮="关闭",
   双悬浮按钮中的右侧按钮="关闭",
   双悬浮按钮模式="关闭",
+  关闭的标签页="{}",
+  是否隐藏选择搜索引擎按钮="打开",
+  是否隐藏搜索按钮="关闭",
+  输入框内容="",
+  是否显示大书签按钮和小历史按钮="关闭",
+  是否显示小书签按钮和小历史按钮="打开",
 }
-圆角大小=dp2px(15)
 --初始化列表项目个数=#初始化列表+8
-初始化列表项目个数=83
+初始化列表项目个数=87
 if 文件是否存在("/data/data/"..activity.getPackageName().."/初始化列表项目个数.xml")==false then
   写入文件("/data/data/"..activity.getPackageName().."/初始化列表项目个数.xml",tostring(初始化列表项目个数))
   for k,v in pairs(初始化列表) do
@@ -367,10 +373,12 @@ end
 --import "java.io.File"导入文件类
 --picsave="/sdcard/download/alitao/web_picture/" --注意后面有个/才是文件夹
 picture="/sdcard/Pictures/MhdhhfBrowser/"
+picture2="/sdcard/Pictures/MhdhhfBrowser/websave/"
 websave="/sdcard/Download/MhdhhfBrowser/websave/"
 backup="/sdcard/Download/MhdhhfBrowser/backup/"
 File(websave).mkdirs()--如果只创建一级文件夹，请改为mkdir
 File(picture).mkdirs()
+File(picture2).mkdirs()
 File(backup).mkdir()
 
 
@@ -442,7 +450,7 @@ function 自动变色()
   pcall(function()
     if io.open("/data/data/"..activity.getPackageName().."/是否操作栏自动变色.xml"):read("*a")=="打开" then
       if 夜间模式=="关闭" and 是否显示主页列表[当前窗口]==false then
-        mToolbar3.Elevation=0;
+        mToolbar3外.Elevation=0;
         import "android.graphics.*"
         import "android.renderscript.*"
         import "android.graphics.drawable.*"
@@ -527,15 +535,18 @@ function 自动变色()
   end)
 
 end
+
 function isDarkColor(color)
   import 'java.lang.Long'
-  local r=utf8.sub(color,3,4)
-  local g=utf8.sub(color,5,6)
-  local b=utf8.sub(color,7,8)
+  color=string.format("%#x",color)
+  local r=tointeger("0x"..utf8.sub(color,3,4))
+  local g=tointeger("0x"..utf8.sub(color,5,6))
+  local b=tointeger("0x"..utf8.sub(color,7,8))
   local function toint(e)
     return Long.parseLong(e, 16)
   end
-  return ((toint(r) * 0.299/145.298) + (toint(g) * 0.587/145.298) + (toint(b) * 0.114/145.298))<= 0.5
+  --return ((toint(r) * 0.299/145.298) + (toint(g) * 0.587/145.298) + (toint(b) * 0.114/145.298))<= 0.5
+return (r+g+b)/765<= 0.5
 end
 是否暗色=isDarkColor
 function CircleButton(view,InsideColor,radiu)
@@ -565,10 +576,11 @@ function 隐藏控件2(控件ID)
   控件ID.setLayoutParams(linearParams)
 end
 function 显示控件2(控件ID)
-  --同理设置高度
+显示控件(控件ID)
+  --[[同理设置高度
   linearParams = 控件ID.getLayoutParams()
   linearParams.height =dp2px(44)
-  控件ID.setLayoutParams(linearParams)
+  控件ID.setLayoutParams(linearParams)]]
 end
 
 
@@ -711,6 +723,7 @@ function 恢复颜色()
   底部栏2.setBackgroundColor(Color.parseColor(背景2))
 
   网页后退ImageView.setColorFilter(文字123)
+ids.icon.setColorFilter(文字123)
   网页前进ImageView.setColorFilter(文字123)
   打开菜单ImageView.setColorFilter(文字123)
   第四个按钮ImageView.setColorFilter(文字123)
@@ -751,7 +764,7 @@ function 恢复颜色()
       activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS).setStatusBarColor(背景);
     end
   end]]
-  mToolbar3.Elevation=获取控件阴影();
+  mToolbar3外.Elevation=获取控件阴影();
   波纹qwe()
   if 浏览器页面标题边框=="打开" then
     --标题t.textSize=sp2px(7)
@@ -811,13 +824,13 @@ function 波纹qwe()
     底栏搜索图标LinearLayout,
   },"方",文字)
 end
-task(1,function()
+--[[task(1,function()
 
   if (activity.Title=="Mhdhhf浏览器")==false then--判断是否主页
 
     import "func2"
   end
-end)
+end)]]
 function CircleButton(--[[view,]]InsideColor,radiu)
   import "android.graphics.drawable.GradientDrawable"
   drawable = GradientDrawable()
@@ -843,17 +856,7 @@ function 控件边框(id,r,t,y,宽度)
   id.setBackgroundDrawable(drawable)
 end
 
-function 悬浮窗刷新标题()
-  标题显示内容=io.open("/data/data/"..activity.getPackageName().."/标题显示内容.xml"):read("*a")
-  if 标题显示内容=="网页标题" then
-    win_move.text=悬浮窗webView.getTitle()
-   elseif 标题显示内容=="网页域名" then
-    import "android.net.Uri"
-    win_move.text=Uri.parse(悬浮窗webView.url).authority
-   elseif 标题显示内容=="网页链接" then
-    win_move.text=悬浮窗webView.Url
-  end
-end
+
 
 function sp2px(spValue)
   local scale = activity.getResources().getDisplayMetrics().scaledDensity
@@ -920,14 +923,14 @@ function onKeyDown(code,event)
   end
 end
 
-版本表={"3.15","3.13","3.12","3.11","3.10","3.9"}
+版本表={"3.16","3.15.1","3.15","3.13","3.12","3.11","3.10","3.9"}
 
-function onConfigurationChanged(config)
+--[[function onConfigurationChanged(config)
   --这个函数不是自定义的，屏幕旋转系统会调用这个的
 
   AWidth=activity.getWidth()--新宽
   AHeight=activity.getHeight()--新高
-end
+end]]
 mmpe={"更换背景色",
   "翻译网页",
   "无痕模式",
@@ -1053,12 +1056,22 @@ function 边框(r,t,y,宽度)
   return drawable
 end
 --activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-function 获取内容(标题,链接)
-  return [==[【项目】【标题】]==]..标题..[==[【标题】【链接】]==]..链接..[==[【链接】【项目】]==]
+function 获取内容(标题,链接,图片编号)
+  local a=[==[【项目】【标题】]==]..标题..[==[【标题】【链接】]==]..链接..[==[【链接】]==]
+  if 图片编号 then
+    a=a..[==[【图片编号】]==]..图片编号..[==[【图片编号】]==]
+  end
+  local a=a.."【项目】"
+  return a
 end
-function 获取内容带ScrollY(标题,链接,ScrollY)
+function 获取历史记录项目内容(标题,链接)
+  local a=[==[【项目】【标题】]==]..标题..[==[【标题】【链接】]==]..链接..[==[【链接】【时间】]==]..os.date("%Y-%m-%d %H:%M:%S")..[==[【时间】]==]
+    local a=a.."【项目】"
+  return a
+end
+--[[function 获取内容带ScrollY(标题,链接,ScrollY)
   return [==[【项目】【标题】]==]..标题..[==[【标题】【链接】]==]..链接..[==[【链接】【ScrollY】]==]..ScrollY..[==[【ScrollY】【项目】]==]
-end
+end]]
 function 打开关闭转TF(内容)
   return 内容=="打开"
 end
@@ -1095,3 +1108,32 @@ function 震动(a)
   --{0,1000,500,1000,500,1000}
   --别忘了申明权限
 end
+function 刷新标题()
+  if 是否显示主页列表[当前窗口] then
+   else
+    标题显示内容=io.open("/data/data/"..activity.getPackageName().."/标题显示内容.xml"):read("*a")
+    if 标题显示内容=="网页标题" then
+      标题t.text=view.getTitle()
+      底栏标题t.text=view.getTitle()
+     elseif 标题显示内容=="网页域名" then
+      import "android.net.Uri"
+      标题t.text=Uri.parse(view.url).authority
+      底栏标题t.text=Uri.parse(view.url).authority
+     elseif 标题显示内容=="网页链接" then
+      标题t.text=view.Url
+      底栏标题t.text=view.Url
+    end
+  end
+end
+function 设置右上角按钮图标(图标)
+  Sideslip1.setImageBitmap(loadbitmap(图标))
+  底栏Sideslip1.setImageBitmap(loadbitmap(图标))
+end
+if activity.getWidth()<activity.getHeight() then
+    圆环大小=activity.getWidth()/100*12
+    圆环大小2="12%w"
+   else--info=land
+    圆环大小=activity.getHeight()/100*12
+    圆环大小2="12%h"
+  end
+我的边框=边框(圆环大小/2,"#00000000",边框2,dp2px("1.5"))

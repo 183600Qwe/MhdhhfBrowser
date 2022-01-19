@@ -6,7 +6,17 @@ Build.VERSION.SDK_INT >= 23 是因为安卓6.0以下没有统一判断悬浮窗�
 当安卓版本大于6.0且无悬浮窗权限时返回false
 当安卓版本小于6.0时无法判断返回nil
 ]]
-
+function 悬浮窗刷新标题()
+  标题显示内容=io.open("/data/data/"..activity.getPackageName().."/标题显示内容.xml"):read("*a")
+  if 标题显示内容=="网页标题" then
+    win_move.text=悬浮窗webView.getTitle()
+   elseif 标题显示内容=="网页域名" then
+    import "android.net.Uri"
+    win_move.text=Uri.parse(悬浮窗webView.url).authority
+   elseif 标题显示内容=="网页链接" then
+    win_move.text=悬浮窗webView.Url
+  end
+end
 function showWindow(url) --显示
   function changeWindow()
     if isMax==false then
@@ -94,11 +104,11 @@ function showWindow(url) --显示
               layout_height="fill",--布局高度
               id="悬浮窗webView",
             },
-             {
-            FrameLayout,
-            layout_width="-1",
-            layout_height="-1",
-            id="搜索外",
+            {
+              FrameLayout,
+              layout_width="-1",
+              layout_height="-1",
+              id="搜索外",
             };
           };
 
@@ -328,7 +338,7 @@ function showWindow(url) --显示
                       },
                     };
                   };
-          {
+                  {
                     LinearLayout,
                     layout_height="-1",
                     layout_width="-2",
@@ -642,7 +652,7 @@ function showWindow(url) --显示
         end
 
 
-        
+
 
 
         if 主页链接=="仅搜索栏" then
@@ -689,7 +699,7 @@ function showWindow(url) --显示
           };
         }))
         波纹({文字2},"方",文字)
-       -- yuxuanpop外=yuxuanpop2
+        -- yuxuanpop外=yuxuanpop2
         yuxuanpop外.setBackgroundColor(Color.parseColor(背景2))
         搜索mToolbar外.Elevation=0
         --控件不可视
@@ -770,19 +780,39 @@ function showWindow(url) --显示
         end,
       }));]]
         local function 离开布局页面()
+          --控件不可视
+          --vngggggg悬浮窗.setVisibility(View.INVISIBLE)
+          隐藏控件(vngggggg悬浮窗)
         end
+        newSetting(悬浮窗webView)
+        悬浮窗webView.getSettings().setTextZoom(80)--字体大小
         悬浮窗webView.setWebViewClient({
           shouldOverrideUrlLoading=function(view,url,uh)
+            离开布局页面()
             悬浮窗进度条.setVisibility(0)--显示进度条
-            if url:find("http") or url:find("ftp") then
+            if string.sub(url,1,7)=="http://" or
+              string.sub(url,1,8)=="https://" or
+              string.sub(url,1,7)=="file://" or
+              string.sub(url,1,6)=="ftp://" or
+              string.sub(url,1,12)=="view-source:" then
              else
               if 是否允许网页打开外部应用=="打开" then
                 import "android.content.Intent"
                 intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME);
                 intent.setComponent(nil);
                 this.startActivity(intent)
-               else
-                view.stopLoading()--拦截打开app行为
+               elseif 是否允许网页打开外部应用=="询问" then
+                对话框({
+                  标题="是否打开应用",
+                  点击事件=function()
+                    import "android.content.Intent"
+                    intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME);
+                    intent.setComponent(nil);
+                    this.startActivity(intent)
+                  end,
+                  文本内容="链接"..url,
+                  是否显示取消按钮=false,
+                })
               end
             end
           end,
@@ -795,8 +825,6 @@ function showWindow(url) --显示
             end
             --控件可视
             悬浮窗搜索CardView.setVisibility(View.VISIBLE)
-            newSetting(悬浮窗webView)
-            悬浮窗webView.getSettings().setTextZoom(80)--字体大小
             url=tostring(悬浮窗webView.Url)
             是否正在查看布局页面=false
             悬浮窗搜索图标ImageView.setImageBitmap(loadbitmap("png/qwetyi.png"))
@@ -807,12 +835,6 @@ function showWindow(url) --显示
               win_move.text="主页"
              else
               悬浮窗网页加载状态="末完成"
-              无痕模式=io.open("/data/data/"..activity.getPackageName().."/无痕模式.xml"):read("*a")
-              if 无痕模式=="打开" then
-               else
-                内容=io.open("/data/data/"..activity.getPackageName().."/历史记录保存.xml"):read("*a")
-                写入文件("/data/data/"..activity.getPackageName().."/历史记录保存.xml",获取内容(悬浮窗webView.title,悬浮窗webView.Url)..内容)
-              end
               悬浮窗底部栏2.setBackgroundColor(Color.parseColor(底栏))
               if 浏览器页面标题栏背景是否为白色=="打开" then
                 悬浮窗标题栏.setBackgroundColor(Color.parseColor(底栏))
@@ -835,8 +857,22 @@ function showWindow(url) --显示
             --删除进度条
             悬浮窗webView.removeView(view.getChildAt(0))
             悬浮窗搜索图标ImageView.setImageBitmap(loadbitmap("png/mklj.png"))
+            离开布局页面()
+            隐藏控件(vngggggg悬浮窗)
+            if vngggggg悬浮窗书签 then
+              隐藏控件(vngggggg悬浮窗书签)
+            end
+            if vngggggg悬浮窗历史记录 then
+              隐藏控件(vngggggg悬浮窗历史记录)
+            end
+            无痕模式=io.open("/data/data/"..activity.getPackageName().."/无痕模式.xml"):read("*a")
+            if 无痕模式=="打开" then
+             else
+              内容=io.open("/data/data/"..activity.getPackageName().."/历史记录保存.xml"):read("*a")
+              写入文件("/data/data/"..activity.getPackageName().."/历史记录保存.xml",获取历史记录项目内容(悬浮窗webView.title,悬浮窗webView.Url)..内容)
+            end
         end})
-                --控件不可视
+        --控件不可视
         悬浮窗菜单scrollView外.setVisibility(View.INVISIBLE)
         悬浮窗菜单列表={"添加书签","书签","下载管理","暗色模式","在一般的页面浏览网页"}
         悬浮窗菜单图标列表={"png/fhvpfxgj.png","png/bookmarks_black.png","png/gnjs2x.png","png/black.png","png/__ic_fltbtn3.png"}
@@ -976,7 +1012,7 @@ function showWindow(url) --显示
           end
         end
         主页搜索LinearLayout.onClick=悬浮窗弹出搜索
-        粘贴TextView.onClick=function()
+        粘贴按钮LinearLayout.onClick=function()
           悬浮窗弹出搜索()
           光标前的位置=edit.getSelectionStart()
           光标后的位置=edit.getSelectionEnd()

@@ -1,4 +1,3 @@
-task(1,function()
 
 
 
@@ -86,7 +85,7 @@ task(1,function()
       })
     end
     menu.add("新建书签").onMenuItemClick=function(a)
-      保存收藏("","")
+      保存收藏("","",true)
     end
     menu.add("新建文件夹").onMenuItemClick=function(a)
       新建文件夹()
@@ -190,26 +189,14 @@ task(1,function()
       menu=pop.Menu
       menu.add("按文件内容").onMenuItemClick=function(a)
         写入文件("/data/data/"..activity.getPackageName().."/排序.xml","按文件内容")
-        title2={}
-        bookId2={}
-        内容=io.open("/data/data/"..activity.getPackageName().."/"..文件名称..".xml"):read("*a")
-        for t,c in 内容:gmatch("【项目】(.-)【项目】") do
-          table.insert(title2,t:match("【标题】(.-)【标题】"))
-          table.insert(bookId2,t:match("【链接】(.-)【链接】"))
-        end
+        刷新书签()
         local adpd=adapterData(title2)
         local items=LuaAdapter(this,adpd,item)
         list.Adapter=items
       end
       menu.add("按名称").onMenuItemClick=function(a)
         写入文件("/data/data/"..activity.getPackageName().."/排序.xml","按名称")
-        title2={}
-        bookId2={}
-        内容=io.open("/data/data/"..activity.getPackageName().."/"..文件名称..".xml"):read("*a")
-        for t,c in 内容:gmatch("【项目】(.-)【项目】") do
-          table.insert(title2,t:match("【标题】(.-)【标题】"))
-          table.insert(bookId2,t:match("【链接】(.-)【链接】"))
-        end
+        刷新书签()
         table.sort(title2,function(a,b)
           return ((a)>(b))
         end)
@@ -280,4 +267,3 @@ task(1,function()
       书签背景外.startAnimation(透明动画)
     end
   end;
-end)

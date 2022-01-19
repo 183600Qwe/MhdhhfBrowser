@@ -9,27 +9,6 @@
     id='父布局';
     BackgroundColor=背景;
     {
-      LinearLayout;
-      layout_width='fill';--布局宽度
-      layout_height="88dp";
-      orientation="vertical";
-      id='mToolbar3外2';
-      {
-        FrameLayout;
-        layout_width="fill";
-        layout_height=状态栏高度;
-        id='状态栏替代';
-      };
-      {
-        LinearLayout;
-        layout_width='fill';--布局宽度
-        --layout_height="44dp";
-        orientation="horizontal";
-        BackgroundColor=标题栏色;
-        id='mToolbar3外';
-      };
-    };
-    {
       LinearLayout,--线性布局
       orientation="vertical",--布局方向
       layout_width="fill",--布局宽度
@@ -40,7 +19,7 @@
         LinearLayout,
         layout_width="fill",--布局宽度
         layout_height=状态栏高度,--布局高度
-        backgroundColor=一般强调色,--背景颜色
+        --backgroundColor=一般强调色,--背景颜色
         id="状态栏",
         --backgroundColor="#ffffff",--背景颜色
         --id="顶部代替paddingTop",
@@ -48,7 +27,7 @@
       {
         LinearLayout,
         layout_width="fill",--布局宽度
-        layout_height=dp2px(44),--布局高度
+        layout_height="44dp",--布局高度
         --backgroundColor="#ffffff",--背景颜色
         id="顶部代替paddingTop",
       },--结束
@@ -94,7 +73,6 @@
               layout_width="fill",--布局宽度
               layout_height="fill",--布局高度
               id="webviewp外",
-
 
             };
             {
@@ -662,6 +640,27 @@
             layout_gravity="bottom|center";
           };
         };
+      };
+    };
+      {
+      LinearLayout;
+      layout_width='fill';--布局宽度
+      orientation="vertical";
+      layout_height="fill";
+      id='mToolbar3外2';
+      {
+        FrameLayout;
+        layout_width="fill";
+        layout_height=状态栏高度;
+        id='状态栏替代';
+      };
+      {
+        LinearLayout;
+        layout_width='fill';--布局宽度
+        layout_height="44dp";
+        orientation="horizontal";
+        BackgroundColor=标题栏色;
+        id='mToolbar3外';
       };
     };
   };

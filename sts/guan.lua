@@ -63,7 +63,7 @@ datas={}
 
 --创建了三个有数据的列表
 --aic={}
-aw3={"联系开发者","官方Q群","开源许可","源码和历史版本(包括其他应用的)","用户协议","隐私政策","显示首次启动页","更新日志"}
+aw3={"qq:183600(3025385472)","酷安:qwe12345678","","官方Q群","开源许可","源码和历史版本(包括其他应用的)","用户协议","隐私政策","显示首次启动页","更新日志","贡献者名录"}
 --mmp={"导出导入 添加 删改","导出为xml","当前为"}
 --"当前为"..io.open("/data/data/"..activity.getPackageName().."/主页链接.xml"):read("*a")
 
@@ -86,50 +86,39 @@ list3.setOnItemClickListener(AdapterView.OnItemClickListener{
   onItemClick=function(parent,v,pos,id)
     v=pos+1
     if v==1 then
-      pop=PopupMenu(activity,qwe)
-      menu=pop.Menu
-      menu.add("QQ").onMenuItemClick=function(a)
-        if pcall(function() activity.getPackageManager().getPackageInfo("com.tencent.mobileqq",0) end) then
+      if pcall(function() activity.getPackageManager().getPackageInfo("com.tencent.mobileqq",0) end) then
           url="mqqapi://card/show_pslcard?src_type=internal&source=sharecard&version=1&uin=3025385472"
           activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
          else
           print("未安装")
         end
-      end
-      menu.add("酷安").onMenuItemClick=function(a)
-        url="http://www.coolapk.com/u/1910517"
+      elseif v==2 then
+url="http://www.coolapk.com/u/1910517"
         activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
-      end
-      pop.show()--显示@音六站长～
-
-    end
-    if v==2 then
+    elseif v==4 then
       --调用
       if pcall(function() activity.getPackageManager().getPackageInfo("com.tencent.mobileqq",0) end) then
         QQ群("798400036")
        else
         print("未安装")
       end
-    end
-        if v==3 then
+    elseif v==5 then
             数据传送="开源许可"
     运行代码含读取文件("sts/gongxian")
-    end
-        if v==4 then
+    elseif v==6 then
       加载("http://www.iyuji.cn/iyuji/s/RWlIQnNReFJrWmxONjREaWEvR2hBUT09/1580171453352562")
-    end
-    if v==5 then
+    elseif v==7 then
       提示(用户协议)
-    end
-    if v==6 then
+    elseif v==8 then
       提示(隐私政策)
-    end
-    if v==7 then
+    elseif v==9 then
   import "shouciqidongyie"
     显示首次启动页()
-    end
-    if v==8 then
+    elseif v==10 then
     数据传送="更新日志"
+    运行代码含读取文件("sts/gongxian")
+elseif v==11 then
+    数据传送="贡献者名录"
     运行代码含读取文件("sts/gongxian")
     end
   end

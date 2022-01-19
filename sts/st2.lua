@@ -11,22 +11,27 @@ end
 主页.addView(st)--添加控件
 页面列表["设置"]=true
 设置背景外=设置背景外
-function 文件反转(v,id,记录文件的列表)
-  if io.open("/data/data/"..activity.getPackageName().."/"..记录文件的列表[id]..".xml"):read("*a")=="打开" then
-    写入文件("/data/data/"..activity.getPackageName().."/"..记录文件的列表[id]..".xml","关闭")
+function 文件反转(v,id,a)
+  if io.open("/data/data/"..activity.getPackageName().."/"..a..".xml"):read("*a")=="打开" then
+    写入文件("/data/data/"..activity.getPackageName().."/"..a..".xml","关闭")
     v.Tag.mSwitch.Checked=false
     --加载列表()
    else--if io.open("/data/data/"..activity.getPackageName().."/滑动显示隐藏操作栏.xml"):read("*a")=="关闭" then
-    写入文件("/data/data/"..activity.getPackageName().."/"..记录文件的列表[id]..".xml","打开")
+    写入文件("/data/data/"..activity.getPackageName().."/"..a..".xml","打开")
     v.Tag.mSwitch.Checked=true
     --加载列表()
   end
 end
-function 设置文件反转点击事件(id,记录文件的列表)
+function 设置文件反转点击事件(id,记录文件的列表,记录事件的列表)
   id.setOnItemClickListener(AdapterView.OnItemClickListener{
     onItemClick=function(parent,v,pos,id)
-      文件反转(v,id,记录文件的列表)
-  end})
+      a=记录文件的列表[id]
+      if a then
+        文件反转(v,id,a)
+       else
+        记录事件的列表[v.Tag.srct.Text](v)
+      end
+    end})
 end
 import "android.graphics.PorterDuffColorFilter"
 import "android.graphics.PorterDuff"
@@ -214,6 +219,8 @@ end
             "隐藏切换窗口按钮",
             "将网页前进按钮和网页后退按钮改为书签按钮和历史按钮",
             "隐藏快速输入网址器",
+            "隐藏选择搜索引擎按钮",
+            "隐藏搜索按钮",
             "书签设置",
             "双悬浮按钮设置",
           }
@@ -229,6 +236,10 @@ end
             "是否隐藏切换窗口按钮",
             "是否将网页前进按钮和网页后退按钮改为书签按钮和历史按钮",
             "是否隐藏快速输入网址器",
+            "是否隐藏选择搜索引擎按钮",
+            "是否隐藏搜索按钮",
+            nil,
+            nil,
           }
          elseif v.Tag.srct.Text=="主页" then
           aw3={"主页设置",
@@ -243,7 +254,7 @@ end
             nil,
           }
          elseif v.Tag.srct.Text=="个性化" then
-          aw3={"输入框诗句",
+          aw3={"输入框内容",
             "修改底栏样式",
             "控件阴影",
             "浏览器页面标题居中",
@@ -254,7 +265,7 @@ end
             "操作栏自动变色",
           }
           记录文件的列表={
-            "输入框诗句",
+            nil,
             nil,
             "控件阴影",
             "主页标题是否居中",
@@ -346,8 +357,8 @@ end
         --菜单点击事件
         mlist.setOnItemClickListener(AdapterView.OnItemClickListener{
           onItemClick=function(parent, v, pos,id)
-            控件ID=v.Tag.srct
-            文本=控件ID.Text
+            控件ID=v2
+            文本=v.Tag.srct.Text
             if 文本=="设置网页字体大小" then
               InputLayout={
                 LinearLayout;
@@ -398,7 +409,7 @@ end
                   --状态改变
                   textView.text="字体大小"..tostring(seekBar.getProgress()+45)..""
                   textView.textSize=(dp2px(8)/100*(seekBar.getProgress()+45))
-              end}
+                end}
               --状态改变
               textView.text="字体大小"..tostring(seekBar.getProgress()+45)..""
               textView.textSize=(dp2px(8)/100*(seekBar.getProgress()+45))
@@ -417,8 +428,11 @@ end
               end
               pop.show()--显示@音六站长～
              elseif 文本=="主页设置" then
-              pop=PopupMenu(activity,控件ID)
-              menu=pop.Menu
+              pop1=PopupMenu(activity,控件ID)
+              menu=pop1.Menu
+              menu.add("设置为空白或壁纸").onMenuItemClick=function(a)
+                写入文件("/data/data/"..activity.getPackageName().."/主页链接.xml","空白或壁纸")
+              end
               menu.add("设置为链接").onMenuItemClick=function(a)
                 对话框({
                   标题="设置为链接",
@@ -439,18 +453,14 @@ end
               menu.add("设置为搜索栏加常用网站").onMenuItemClick=function(a)
                 写入文件("/data/data/"..activity.getPackageName().."/主页链接.xml","仅搜索栏")
               end
-              pop.show()--显示@音六站长～
+              pop1.show()--显示@音六站长～
              elseif 文本=="修改主页搜索栏样式" then
               运行代码含读取文件('sts/so')
              elseif 文本=="修改底栏样式" then
               运行代码含读取文件('sts/dilan')
              elseif 文本=="搜索引擎选择" then
               切换搜索引擎(控件ID)
-
              elseif 文本=="垂直搜索(快速搜索)管理" and 返回数据=="数据管理"==false then
-              --切换搜索引擎(控件ID)
-              --渐变动画效果的，中间是安卓跳转动画代码
-
               数据传送="搜索引擎管理"
               运行代码含读取文件("sts/gongxian")
              elseif 文本=="程序启动事件" then
@@ -969,7 +979,13 @@ end
               }
               对话框标题="双悬浮按钮设置"
               运行代码含读取文件("mods/dialog/liebiaoduihuakuang")
-              设置文件反转点击事件(list,记录文件的列表)
+              设置文件反转点击事件(list,记录文件的列表,{
+                ["右侧按钮工具设置"]=function(控件ID)
+                  控件ID2=控件ID
+                  文件名称="新悬浮按钮常用工具列表"
+                  运行代码含读取文件("mods/tianjiagongju")
+                end
+              })
               --yuxuan_adpqy.add({srct={text="双悬浮按钮设置",textSize="14sp"},mSwitch={Visibility=View.GONE}})
               local InputLayout=
               {
@@ -985,6 +1001,33 @@ end
                 --paddingBottom='15dp';
               };
               内容ScrollView外.addView(loadlayout(InputLayout))
+             elseif 文本=="输入框内容" then
+              pop1=PopupMenu(activity,控件ID)
+              menu=pop1.Menu
+              menu.add("诗句").onMenuItemClick=function(a)
+                写入文件("/data/data/"..activity.getPackageName().."/输入框内容.xml","诗句")
+              end
+              menu.add("输入网址或搜索").onMenuItemClick=function(a)
+                写入文件("/data/data/"..activity.getPackageName().."/输入框内容.xml","输入网址或搜索")
+              end
+              menu.add("网址/搜索").onMenuItemClick=function(a)
+                写入文件("/data/data/"..activity.getPackageName().."/输入框内容.xml","网址/搜索")
+              end
+              menu.add("无").onMenuItemClick=function(a)
+                写入文件("/data/data/"..activity.getPackageName().."/输入框内容.xml","")
+              end
+             menu.add("自定义").onMenuItemClick=function(a)
+                对话框({
+                  标题="自定义",
+                  HINT="显示的文字",
+                  点击事件=function(text)
+                    写入文件("/data/data/"..activity.getPackageName().."/输入框内容.xml",text)
+                  end,
+                  是否显示取消按钮=true,
+                  输入框文本=io.open("/data/data/"..activity.getPackageName().."/输入框内容.xml"):read("*a")
+                })
+              end
+          pop1.show()--显示@音六站长～
              else
               if io.open("/data/data/"..activity.getPackageName().."/"..记录文件的列表[pos+1]..".xml"):read("*a")=="打开" then
                 写入文件("/data/data/"..activity.getPackageName().."/"..记录文件的列表[pos+1]..".xml","关闭")
@@ -1022,7 +1065,7 @@ end
         mlist.Adapter=yuxuan_adpqy
       end
     end
-end})
+  end})
 
 
 
@@ -1279,7 +1322,7 @@ function 显示选择功能对话框(项目名称,a,保存文件,b)
         长按功能[项目名称]=工具名称
         写入文件("/data/data/"..activity.getPackageName().."/"..保存文件..".xml",dump(长按功能))
       end
-  end})
+    end})
   --[[function 加载(名称)
     for d,工具名称 in pairs(名称) do
 

@@ -1,6 +1,6 @@
 appname="Mhdhhf浏览器"
-appver="3.15"
-appcode="34"
+appver="3.16"
+appcode="36"
 appsdk="15"
 path_pattern=""
 packagename="com.mhdhhf.browser"

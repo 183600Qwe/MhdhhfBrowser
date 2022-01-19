@@ -1,5 +1,3 @@
-
-
 function 获取脚本内容(标题,内容,是否开启脚本,使用对象)
   return [==[【项目】【标题】]==]..标题..[==[【标题】【内容】]==]..内容..[==[【内容】【是否开启脚本】]==]..是否开启脚本..[==[【是否开启脚本】【使用对象】]==]..使用对象..[==[【使用对象】【项目】]==]
 
@@ -105,6 +103,7 @@ function 打开关闭反转(d)
     return "打开"
   end
 end
+
 if 文本=="更新日志" then
   import "wenben"
   for k,v in ipairs(版本表) do --遍历
@@ -124,6 +123,9 @@ if 文本=="更新日志" then
     table.insert(datas,{srct=t:match("【标题】(.-)【标题】"),srcb={Visibility=View.GONE},列表项目背景={backgroundDrawable=边框(dp2px("15"),"#00000000",边框2,dp2px("1.5"))},srct2=打开关闭反转(t:match("【是否开启脚本】(.-)【是否开启脚本】"))})
   end
   显示控件(ftb10)
+  ftb20.onClick=function()
+    运行代码含读取文件("mods/tianjia/tianjiajiaoben")
+  end
  elseif 文本=="工具脚本管理" then
   文件名称="工具脚本保存"
   内容=io.open("/data/data/"..activity.getPackageName().."/"..文件名称..".xml"):read("*a")
@@ -133,6 +135,9 @@ if 文本=="更新日志" then
     table.insert(datas,{srct=t:match("【标题】(.-)【标题】"),srcb={Visibility=View.GONE},srct2=打开关闭反转(t:match("【是否开启脚本】(.-)【是否开启脚本】")),列表项目背景={backgroundDrawable=边框(dp2px("15"),"#00000000",边框2,dp2px("1.5"))}})
   end
   显示控件(ftb10)
+  ftb20.onClick=function()
+    运行代码含读取文件("mods/tianjia/tianjiajiaoben")
+  end
  elseif 文本=="搜索引擎管理" then
   文件名称="搜索引擎保存"
   内容=io.open("/data/data/"..activity.getPackageName().."/"..文件名称..".xml"):read("*a")
@@ -142,6 +147,30 @@ if 文本=="更新日志" then
     table.insert(datas,{srct=t:match("【标题】(.-)【标题】"),srcb={Visibility=View.GONE},srct2={Visibility=View.GONE}})
   end
   显示控件(ftb10)
+  ftb20.onClick=function()
+    运行代码含读取文件("mods/tianjia/tianjiasuosouyingqin")
+  end
+ elseif 文本=="贡献者名录" then
+  datas={
+    {srct="nirenr",srcb="此软件基于他的Androlua+，并使用Androlua+开发。"},
+    {srct="qq@dingyi",srcb="此软件使用了他的多窗口，基于他的dingyi浏览器开发。"},
+    {srct="qq@exception",srcb="提供了一些有关代码的建议。"},
+    {srct="qq@寒歌",srcb="他开发了FusionApp，使我开始安卓开发。开发了一个木函，此软件开发时用了一个木函。"},
+    {srct="qq@muk",srcb="此软件使用了他的web.dex来获取加载进度，开发手册、ui、部分代码"},
+    {srct="FALua手册开发者",srcb="部分代码（？）"},
+    {srct="小白菜",srcb="提供菜单的部分代码，此浏览器菜单基于Ta的关于修改。"},
+    {srct="Pretend°",srcb="此软件可能使用了applua的顶栏模板。"},
+    {srct="qq32552732",srcb="此软件的书签和历史使用了他的收藏夹，其他地方可能也用了这些代码。"},
+  }
+  显示控件(ftb10)
+  ftb20.onClick=function()
+    if pcall(function() activity.getPackageManager().getPackageInfo("com.tencent.mobileqq",0) end) then
+      url="mqqapi://card/show_pslcard?src_type=internal&source=sharecard&version=1&uin=3025385472"
+      activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+     else
+      print("未安装")
+    end
+  end
  else
   隐藏控件(ftb10)
   aw3={"Mhdhhf浏览器",
@@ -320,6 +349,9 @@ if 文本=="脚本管理" or
     end
     pop.show()--显示
   end
+ elseif 文本=="贡献者名录" then
+
+
 end
 波纹({ftb20,
 },"方",文字)
